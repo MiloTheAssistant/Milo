@@ -1,2 +1,2 @@
-# Milo
-Default Repo for Milo The Assistant
+# milo
+Default Repo for milo The Assistant
