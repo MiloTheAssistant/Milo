@@ -1,0 +1,21 @@
+# Credentials & secrets
+.env
+*.env
+credentials.json
+token.json
+
+# Temp work
+.tmp/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# Data & databases
+data/*.db
+
+# OS
+.DS_Store
