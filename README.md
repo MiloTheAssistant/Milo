@@ -53,7 +53,7 @@ Add these **repository secrets** in Settings > Secrets and variables > Actions:
 
 | Workflow | Trigger | What it does |
 |----------|---------|--------------|
-| **Milo Kanban** | Push to `goals/` or `2Brain/` | Regenerates board, sends Telegram ping |
+| **milo Kanban** | Push to `goals/` or `2Brain/` | Regenerates board, sends Telegram ping |
 | **Calendar Sync** | Nightly at 03:00 UTC + pushes to `2Brain/` | Builds `.ics` artifact from `date:` front-matter |
 
 ---

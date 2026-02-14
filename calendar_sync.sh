@@ -9,7 +9,7 @@ ICS_FILE="$REPO_ROOT/MiloKan/milo_calendar.ics"
 {
   echo "BEGIN:VCALENDAR"
   echo "VERSION:2.0"
-  echo "PRODID:-//Milo//Calendar Sync//EN"
+  echo "PRODID:-//milo//Calendar Sync//EN"
   echo "CALSCALE:GREGORIAN"
   echo "METHOD:PUBLISH"
 } > "$ICS_FILE"

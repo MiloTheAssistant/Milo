@@ -30,7 +30,7 @@ done
 
 # ── Render board ────────────────────────────────────────────────
 {
-  echo "# Milo Kanban Board"
+  echo "# milo Kanban Board"
   echo ""
   echo "_Auto-generated on $(date -u '+%Y-%m-%d %H:%M UTC')_"
   echo ""
@@ -52,7 +52,7 @@ echo "Board written to $BOARD_FILE"
 # ── Telegram notification ───────────────────────────────────────
 if [ -n "${TELEGRAM_TOKEN:-}" ] && [ -n "${TELEGRAM_CHAT_ID:-}" ]; then
   # Build a compact message
-  msg="📋 *Milo Kanban Update*%0A"
+  msg="📋 *milo Kanban Update*%0A"
   msg+="Backlog: ${#backlog[@]} · In Progress: ${#in_progress[@]} · Done: ${#done_items[@]}%0A"
   msg+="$(date -u '+%Y-%m-%d %H:%M UTC')"
 
