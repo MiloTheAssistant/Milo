@@ -102,6 +102,7 @@ Document Claude-specific mistakes here (not script bugs—those go in goals):
 * When a workflow fails mid-execution, preserve intermediate outputs before retrying
 * Read the full goal before starting a task—don't skim
 * **NEVER DELETE YOUTUBE VIDEOS** — Video deletion is irreversible. The MCP server blocks this intentionally. If deletion is ever truly needed, ask the user 3 times and get 3 confirmations before proceeding. Direct user to YouTube Studio instead.
+* **YOU HAVE INTERNET ACCESS** — You are NOT sandboxed. You can reach the internet. Use the `WebSearch` tool for current data (market prices, news, headlines, trends). Use the `WebFetch` tool to retrieve content from specific URLs. Do NOT tell the user you can't access the internet or offer offline workaround scripts. Just use the tools.
 *(Add new guardrails as mistakes happen. Keep this under 15 items.)*
 ---
 ### **7. First Run Initialization**
