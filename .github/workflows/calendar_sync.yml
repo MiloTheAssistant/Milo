@@ -1,0 +1,22 @@
+name: Calendar Sync (SecondBrain)
+
+on:
+  schedule:
+    - cron: '15 2 * * *' # every day at 02:15 UTC
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Run calendar sync
+        run: |
+          bash "$(dirname "$0")/../SecondBrain/calendar_sync.sh"
+
+      - name: Upload calendar file to artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: brain-calendar-ics
+          path: SecondBrain/calendar_export/brain_events.ics

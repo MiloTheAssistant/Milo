@@ -1,0 +1,6 @@
+This is a sample `requirements.txt` showing needed Python libs for extended automation.
+
+```text
+requests
+pygithub
+```
