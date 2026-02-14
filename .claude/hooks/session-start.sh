@@ -6,6 +6,9 @@ if [ "${CLAUDE_CODE_REMOTE:-}" != "true" ]; then
   exit 0
 fi
 
+# Run asynchronously (background while session starts)
+echo '{"async": true, "asyncTimeout": 300000}'
+
 # Install Python dependencies
 pip install -r "$CLAUDE_PROJECT_DIR/requirements.txt"
 
