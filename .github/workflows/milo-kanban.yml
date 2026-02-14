@@ -1,0 +1,35 @@
+name: Milo Kanban
+
+on:
+  push:
+    paths:
+      - "goals/**"
+      - "2Brain/**"
+      - "MiloKan/generate_board.sh"
+  workflow_dispatch:
+
+jobs:
+  generate-board:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate Kanban board
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: bash MiloKan/generate_board.sh
+
+      - name: Upload board artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: kanban-board
+          path: MiloKan/board.md
+
+      - name: Commit board if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add MiloKan/board.md
+          git diff --cached --quiet || git commit -m "Update Kanban board [skip ci]"
+          git push || true

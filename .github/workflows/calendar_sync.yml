@@ -1,0 +1,25 @@
+name: Calendar Sync
+
+on:
+  schedule:
+    - cron: "0 3 * * *"  # Nightly at 03:00 UTC
+  push:
+    paths:
+      - "2Brain/**"
+      - "calendar_sync.sh"
+  workflow_dispatch:
+
+jobs:
+  sync-calendar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate .ics calendar file
+        run: bash calendar_sync.sh
+
+      - name: Upload calendar artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: milo-calendar
+          path: MiloKan/milo_calendar.ics

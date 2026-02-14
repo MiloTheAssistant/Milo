@@ -17,5 +17,9 @@ venv/
 # Data & databases
 data/*.db
 
+# Generated artifacts
+MiloKan/board.md
+MiloKan/milo_calendar.ics
+
 # OS
 .DS_Store
