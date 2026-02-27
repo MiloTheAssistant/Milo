@@ -246,7 +246,6 @@
             <div class="nav-item" data-page="council"><div class="nav-icon">👑</div><span class="nav-label">Council</span></div>
             <div class="nav-item" data-page="calendar"><div class="nav-icon">📅</div><span class="nav-label">Calendar</span></div>
             <div class="nav-item" data-page="projects"><div class="nav-icon">📁</div><span class="nav-label">Projects</span></div>
-            <div class="nav-item" data-page="cron"><div class="nav-icon">⏰</div><span class="nav-label">Cron Jobs</span></div>
             <div class="nav-item" data-page="memory"><div class="nav-icon">🧠</div><span class="nav-label">Memory</span></div>
             <div class="nav-item" data-page="docs"><div class="nav-icon">📝</div><span class="nav-label">Docs</span></div>
             <div class="nav-section-title">Team</div>
@@ -307,7 +306,7 @@
                         <div class="quick-actions-grid">
                             <div class="quick-action-btn" onclick="navigateTo('calendar')"><div class="quick-action-icon" style="background: var(--accent-cyan);">📅</div><div class="quick-action-text"><h4>View Calendar</h4><p>Check your schedule</p></div></div>
                             <div class="quick-action-btn" onclick="navigateTo('projects')"><div class="quick-action-icon" style="background: var(--accent-green);">🌐</div><div class="quick-action-text"><h4>View Projects</h4><p>All deployments</p></div></div>
-                            <div class="quick-action-btn" onclick="navigateTo('cron')"><div class="quick-action-icon" style="background: var(--accent-purple);">⏰</div><div class="quick-action-text"><h4>Cron Jobs</h4><p>Scheduled tasks</p></div></div>
+                            <div class="quick-action-btn" onclick="navigateTo('tasks')"><div class="quick-action-icon" style="background: var(--accent-purple);">📋</div><div class="quick-action-text"><h4>Tasks</h4><p>Scheduled cron jobs</p></div></div>
                             <div class="quick-action-btn" onclick="navigateTo('agents')"><div class="quick-action-icon" style="background: var(--accent-orange);">🤖</div><div class="quick-action-text"><h4>Manage Agents</h4><p>Toggle on/off</p></div></div>
                         </div>
                     </div>
@@ -381,10 +380,15 @@
                 </div>
             </div>
 
-            <!-- Placeholders -->
+            <!-- TASKS / CRON JOBS -->
             <div class="page" id="page-tasks">
-                <div class="page-header"><div class="page-header-top"><div class="page-avatar icon-tasks">📋</div><div class="page-title"><h2>Tasks</h2></div></div><p>Manage and track tasks.</p></div>
-                <div class="page-content"><p style="color: var(--text-secondary);">Coming soon...</p></div>
+                <div class="page-header">
+                    <div class="page-header-top"><div class="page-avatar icon-tasks">📋</div><div class="page-title"><h2>Tasks</h2></div></div>
+                    <p>Scheduled cron jobs and automated tasks.</p>
+                </div>
+                <div class="page-content">
+                    <div class="cron-grid" id="tasks-grid"></div>
+                </div>
             </div>
             <div class="page" id="page-content">
                 <div class="page-header"><div class="page-header-top"><div class="page-avatar icon-content">📄</div><div class="page-title"><h2>Content</h2></div></div><p>Documents and files.</p></div>
@@ -456,7 +460,7 @@
             setGreeting();
             renderAgents();
             renderHomeAgents();
-            renderCronJobs();
+            renderTasks();
             renderProjects();
             renderCalendar();
             renderMemory();
@@ -533,9 +537,9 @@
             `).join('');
         }
 
-        // Render Cron
-        function renderCronJobs() {
-            const grid = document.getElementById('cron-grid');
+        // Render Tasks (Cron Jobs)
+        function renderTasks() {
+            const grid = document.getElementById('tasks-grid');
             grid.innerHTML = cronJobs.map(cron => `
                 <div class="cron-card">
                     <div class="cron-header">
