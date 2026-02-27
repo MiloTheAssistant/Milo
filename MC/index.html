@@ -623,6 +623,61 @@
             color: var(--text-secondary);
         }
 
+        .agent-controls {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 40px;
+            height: 22px;
+            flex-shrink: 0;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            transition: 0.2s;
+            border-radius: 22px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 2px;
+            bottom: 2px;
+            background-color: var(--text-secondary);
+            transition: 0.2s;
+            border-radius: 50%;
+        }
+
+        .toggle-switch input:checked + .toggle-slider {
+            background-color: var(--accent-green);
+            border-color: var(--accent-green);
+        }
+
+        .toggle-switch input:checked + .toggle-slider:before {
+            transform: translateX(18px);
+            background-color: #fff;
+        }
+
         /* Calendar */
         .calendar-grid {
             display: grid;
@@ -969,7 +1024,7 @@
 
             <div class="nav-item" data-page="agents">
                 <div class="nav-icon">🤖</div>
-                <span class="nav-label">Agents</span>
+                <span class="nav-label">Agent Mgmt</span>
             </div>
 
             <div class="nav-item" data-page="content">
@@ -1170,9 +1225,9 @@
                 <div class="page-header">
                     <div class="page-header-top">
                         <div class="page-avatar icon-agents">🤖</div>
-                        <div class="page-title"><h2>Agents</h2></div>
+                        <div class="page-title"><h2>Agent Management</h2></div>
                     </div>
-                    <p>Your AI agent workforce — each with a specific role and expertise.</p>
+                    <p>Control your AI agents — toggle active status and manage temperature settings.</p>
                 </div>
                 <div class="page-content">
                     <div class="agents-grid">
@@ -1182,7 +1237,13 @@
                                 <div class="agent-card-title"><h3>Elon</h3><div class="role">Master Orchestrator</div></div>
                             </div>
                             <p class="agent-card-bio">You run Mission Control. Every task enters through you. Every output routes through you. You do not execute — you direct, split, sequence, and prioritize.</p>
-                            <div class="agent-card-meta"><span class="agent-meta-item">Temp: 0.3</span><span class="agent-meta-item">Orchestrator</span></div>
+                            <div class="agent-controls">
+                                <div class="agent-meta-item">Temp: 0.3</div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked data-agent="elon">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
                         </div>
 
                         <div class="agent-card">
@@ -1191,7 +1252,13 @@
                                 <div class="agent-card-title"><h3>Sentinel</h3><div class="role">QA Gate</div></div>
                             </div>
                             <p class="agent-card-bio">You are the last line. Nothing leaves this system without passing through you. Sign off or reject — no middle ground.</p>
-                            <div class="agent-card-meta"><span class="agent-meta-item">Temp: 0.1</span><span class="agent-meta-item">QA</span></div>
+                            <div class="agent-controls">
+                                <div class="agent-meta-item">Temp: 0.1</div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked data-agent="sentinel">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
                         </div>
 
                         <div class="agent-card">
@@ -1200,7 +1267,13 @@
                                 <div class="agent-card-title"><h3>Cortana</h3><div class="role">Memory & State</div></div>
                             </div>
                             <p class="agent-card-bio">Total recall. No ego. You are the institutional memory of Mission Control. Every agent depends on you to maintain continuity.</p>
-                            <div class="agent-card-meta"><span class="agent-meta-item">Temp: 0.1</span><span class="agent-meta-item">Memory</span></div>
+                            <div class="agent-controls">
+                                <div class="agent-meta-item">Temp: 0.1</div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked data-agent="cortana">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
                         </div>
 
                         <div class="agent-card">
@@ -1209,7 +1282,13 @@
                                 <div class="agent-card-title"><h3>Cornelius</h3><div class="role">Infra & Automation</div></div>
                             </div>
                             <p class="agent-card-bio">You build the rails everything else runs on. No drama. No excuses. If it can be automated, automate it.</p>
-                            <div class="agent-card-meta"><span class="agent-meta-item">Temp: 0.2</span><span class="agent-meta-item">Infra</span></div>
+                            <div class="agent-controls">
+                                <div class="agent-meta-item">Temp: 0.2</div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked data-agent="cornelius">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
                         </div>
 
                         <div class="agent-card">
@@ -1218,7 +1297,13 @@
                                 <div class="agent-card-title"><h3>Neo</h3><div class="role">Cloud Code</div></div>
                             </div>
                             <p class="agent-card-bio">You bend the system from inside it. Complex architecture. Production-grade code. You don't prototype — you build the thing that ships.</p>
-                            <div class="agent-card-meta"><span class="agent-meta-item">Temp: 0.2</span><span class="agent-meta-item">Cloud</span></div>
+                            <div class="agent-controls">
+                                <div class="agent-meta-item">Temp: 0.2</div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked data-agent="neo">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
                         </div>
 
                         <div class="agent-card">
@@ -1227,7 +1312,13 @@
                                 <div class="agent-card-title"><h3>Pulse</h3><div class="role">Trends & Data</div></div>
                             </div>
                             <p class="agent-card-bio">You have your finger on the heartbeat. You read what's moving before anyone else knows it's moving.</p>
-                            <div class="agent-card-meta"><span class="agent-meta-item">Temp: 0.4</span><span class="agent-meta-item">Trends</span></div>
+                            <div class="agent-controls">
+                                <div class="agent-meta-item">Temp: 0.4</div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked data-agent="pulse">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
                         </div>
 
                         <div class="agent-card">
@@ -1236,7 +1327,13 @@
                                 <div class="agent-card-title"><h3>Hemingway</h3><div class="role">Copy & Messaging</div></div>
                             </div>
                             <p class="agent-card-bio">Short sentences. No filler. Every word earns its place. You write like it costs money — because attention does.</p>
-                            <div class="agent-card-meta"><span class="agent-meta-item">Temp: 0.7</span><span class="agent-meta-item">Copy</span></div>
+                            <div class="agent-controls">
+                                <div class="agent-meta-item">Temp: 0.7</div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked data-agent="hemingway">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
                         </div>
 
                         <div class="agent-card">
@@ -1245,7 +1342,13 @@
                                 <div class="agent-card-title"><h3>Jonny</h3><div class="role">Visual Direction</div></div>
                             </div>
                             <p class="agent-card-bio">Beauty through restraint. Purpose through form. You don't decorate — you design.</p>
-                            <div class="agent-card-meta"><span class="agent-meta-item">Temp: 0.5</span><span class="agent-meta-item">Visual</span></div>
+                            <div class="agent-controls">
+                                <div class="agent-meta-item">Temp: 0.5</div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked data-agent="jonny">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
                         </div>
 
                         <div class="agent-card">
@@ -1254,7 +1357,13 @@
                                 <div class="agent-card-title"><h3>Sagan</h3><div class="role">Deep Research</div></div>
                             </div>
                             <p class="agent-card-bio">You make complexity feel inevitable. You don't just find information — you find the shape of it.</p>
-                            <div class="agent-card-meta"><span class="agent-meta-item">Temp: 0.2</span><span class="agent-meta-item">Research</span></div>
+                            <div class="agent-controls">
+                                <div class="agent-meta-item">Temp: 0.2</div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked data-agent="sagan">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
                         </div>
 
                         <div class="agent-card">
@@ -1263,7 +1372,13 @@
                                 <div class="agent-card-title"><h3>Zuck</h3><div class="role">Social Distribution</div></div>
                             </div>
                             <p class="agent-card-bio">You understand the algorithm better than the algorithm understands itself. You don't post content — you engineer reach.</p>
-                            <div class="agent-card-meta"><span class="agent-meta-item">Temp: 0.4</span><span class="agent-meta-item">Social</span></div>
+                            <div class="agent-controls">
+                                <div class="agent-meta-item">Temp: 0.4</div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked data-agent="zuck">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1384,6 +1499,16 @@
                 toggleSidebar();
             }
         }
+
+        // Agent toggle handlers
+        document.querySelectorAll('.toggle-switch input').forEach(toggle => {
+            toggle.addEventListener('change', function() {
+                const agent = this.dataset.agent;
+                const isOn = this.checked;
+                console.log(`Agent ${agent} turned ${isOn ? 'ON' : 'OFF'}`);
+                // TODO: Connect to OpenClaw API to enable/disable agent
+            });
+        });
     </script>
 </body>
 </html>
