@@ -147,10 +147,10 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-[#0a0a0f] text-white">
-      <button className="lg:hidden fixed top-4 left-4 z-50 w-11 h-11 rounded-xl bg-[#16161f] border border-[#2a2a3a] flex items-center justify-center text-xl" onClick={() => setSidebarOpen(!sidebarOpen)}>☰</button>
+      <button className="lg:hidden fixed top-4 right-4 z-50 w-11 h-11 rounded-xl bg-[#16161f] border border-[#2a2a3a] flex items-center justify-center text-xl" onClick={() => setSidebarOpen(!sidebarOpen)}>☰</button>
       {sidebarOpen && <div className="lg:hidden fixed inset-0 bg-black/60 z-40" onClick={() => setSidebarOpen(false)} />}
 
-      <aside className={`fixed top-0 left-0 h-full w-64 bg-[#12121a] border-r border-[#2a2a3a] p-4 z-50 transition-transform duration-300 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0`}>
+      <aside className={`fixed top-0 right-0 h-full w-64 bg-[#12121a] border-l border-[#2a2a3a] p-4 z-50 transition-transform duration-300 ${sidebarOpen ? 'translate-x-0' : 'translate-x-full'} lg:translate-x-0`}>
         <div className="border-b border-[#2a2a3a] pb-4 mb-4">
           <h1 className="text-base font-bold tracking-wider uppercase">Mission Control</h1>
           <span className="text-xs text-cyan-400 tracking-widest uppercase">Agent System</span>
@@ -165,9 +165,9 @@ export default function Home() {
         </nav>
       </aside>
 
-      <main className="lg:ml-64 min-h-screen">
+      <main className="lg:mr-64 min-h-screen">
         {activePage === 'home' && (
-          <div className="p-6 lg:p-8 pt-16 lg:pt-8">
+          <div className="p-6 lg:p-8 pt-16 lg:pr-8">
             <div className="mb-7">
               <p className="text-xs text-cyan-400 tracking-widest uppercase mb-1">{getGreeting()}, Boss</p>
               <h1 className="text-3xl font-extrabold bg-gradient-to-r from-white to-cyan-400 bg-clip-text text-transparent">Mission Control</h1>
@@ -258,7 +258,7 @@ export default function Home() {
         )}
 
         {activePage === 'tasks' && (
-          <div className="p-6 lg:p-8 pt-16 lg:pt-8">
+          <div className="p-6 lg:p-8 pt-16 lg:pr-8">
             <div className="mb-6"><h2 className="text-xl font-bold">Tasks</h2><p className="text-sm text-[#8888a0]">Scheduled cron jobs.</p></div>
             <div className="space-y-4">
               {cronJobs.map(cron => (
@@ -279,7 +279,7 @@ export default function Home() {
         )}
 
         {activePage === 'agents' && (
-          <div className="p-6 lg:p-8 pt-16 lg:pt-8">
+          <div className="p-6 lg:p-8 pt-16 lg:pr-8">
             <div className="mb-6"><h2 className="text-xl font-bold">Agents</h2><p className="text-sm text-[#8888a0]">Control your AI agents.</p></div>
             <div className="grid lg:grid-cols-2 gap-4">
               {agents.map(agent => (
@@ -303,7 +303,7 @@ export default function Home() {
         )}
 
         {activePage === 'discord' && (
-          <div className="p-6 lg:p-8 pt-16 lg:pt-8">
+          <div className="p-6 lg:p-8 pt-16 lg:pr-8">
             <div className="mb-6">
               <h2 className="text-xl font-bold flex items-center gap-3">
                 <span className="w-10 h-10 rounded-xl bg-indigo-500 flex items-center justify-center">💬</span>
@@ -368,7 +368,7 @@ export default function Home() {
         )}
 
         {activePage === 'projects' && (
-          <div className="p-6 lg:p-8 pt-16 lg:pt-8">
+          <div className="p-6 lg:p-8 pt-16 lg:pr-8">
             <div className="mb-6"><h2 className="text-xl font-bold">Projects</h2><p className="text-sm text-[#8888a0]">Active deployments.</p></div>
             <div className="grid lg:grid-cols-2 gap-4">
               {projects.map(project => (
@@ -386,7 +386,7 @@ export default function Home() {
         )}
 
         {activePage === 'calendar' && (
-          <div className="p-6 lg:p-8 pt-16 lg:pt-8">
+          <div className="p-6 lg:p-8 pt-16 lg:pr-8">
             <div className="mb-6"><h2 className="text-xl font-bold">Calendar</h2><p className="text-sm text-[#8888a0]">Your Gmail calendar.</p></div>
             <div className="bg-[#16161f] border border-orange-500/30 rounded-xl p-6 text-center">
               <p className="text-orange-400 mb-3">⚠️ Calendar needs re-authentication</p>
@@ -396,7 +396,7 @@ export default function Home() {
         )}
 
         {['content', 'approvals', 'council', 'memory', 'docs', 'people', 'office', 'team'].includes(activePage) && (
-          <div className="p-6 lg:p-8 pt-16 lg:pt-8">
+          <div className="p-6 lg:p-8 pt-16 lg:pr-8">
             <div className="mb-6"><h2 className="text-xl font-bold capitalize">{activePage}</h2><p className="text-sm text-[#8888a0]">Coming soon...</p></div>
           </div>
         )}
