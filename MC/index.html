@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mission Control</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-tertiary: #1a1a24;
+            --bg-card: #16161f;
+            --border-color: #2a2a3a;
+            --text-primary: #ffffff;
+            --text-secondary: #8888a0;
+            --text-muted: #55556a;
+            --accent-cyan: #00d4ff;
+            --accent-red: #ff6b6b;
+            --accent-green: #4ecdc4;
+            --accent-purple: #9b59b6;
+            --accent-orange: #ff9f43;
+            --accent-blue: #5f9ea0;
+            --accent-pink: #fd79a8;
+            --accent-gold: #fdcb6e;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* Left Sidebar */
+        .sidebar {
+            width: 280px;
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            padding: 24px 16px;
+        }
+
+        .sidebar-header {
+            padding: 0 8px 24px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 24px;
+        }
+
+        .sidebar-header h1 {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--text-primary);
+        }
+
+        .sidebar-header span {
+            font-size: 11px;
+            color: var(--accent-cyan);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .section-title {
+            font-size: 10px;
+            color: var(--text-muted);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            padding: 0 8px;
+            margin-bottom: 12px;
+        }
+
+        .agent-list {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .agent-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+        }
+
+        .agent-item:hover {
+            background: var(--bg-tertiary);
+            border-color: var(--border-color);
+        }
+
+        .agent-item.active {
+            background: var(--bg-tertiary);
+            border-color: var(--accent-cyan);
+        }
+
+        .agent-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .agent-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .agent-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 2px;
+        }
+
+        .agent-role {
+            font-size: 11px;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .content-header {
+            padding: 32px 40px;
+            border-bottom: 1px solid var(--border-color);
+            background: var(--bg-secondary);
+        }
+
+        .content-header-top {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 16px;
+        }
+
+        .content-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 28px;
+        }
+
+        .content-title h2 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .content-title .temp-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+        }
+
+        .content-header p {
+            color: var(--text-secondary);
+            font-size: 15px;
+            line-height: 1.6;
+            max-width: 700px;
+        }
+
+        .content-body {
+            flex: 1;
+            padding: 32px 40px;
+            overflow-y: auto;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .info-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px;
+        }
+
+        .info-card h3 {
+            font-size: 11px;
+            color: var(--text-muted);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .info-card p, .info-card li {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        .info-card ul {
+            list-style: none;
+        }
+
+        .info-card li {
+            padding: 6px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .info-card li:last-child {
+            border-bottom: none;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        /* Agent Colors */
+        .elon { background: linear-gradient(135deg, #00d4ff, #0099cc); color: #000; }
+        .cornelius { background: linear-gradient(135deg, #5f9ea0, #2e8b84); }
+        .neo { background: linear-gradient(135deg, #74b9ff, #0984e3); }
+        .sagan { background: linear-gradient(135deg, #a29bfe, #6c5ce7); }
+        .pulse { background: linear-gradient(135deg, #fd79a8, #e84393); }
+        .hemingway { background: linear-gradient(135deg, #fdcb6e, #f39c12); color: #000; }
+        .jonny { background: linear-gradient(135deg, #ff9f43, #e17055); }
+        .zuck { background: linear-gradient(135deg, #4ecdc4, #22a6b3); }
+        .sentinel { background: linear-gradient(135deg, #ff6b6b, #ee5a5a); }
+        .cortana { background: linear-gradient(135deg, #9b59b6, #8e44ad); }
+
+        /* Icon initials */
+        .icon-elon::before { content: "E"; }
+        .icon-cornelius::before { content: "C"; }
+        .icon-neo::before { content: "N"; }
+        .icon-sagan::before { content: "S"; }
+        .icon-pulse::before { content: "P"; }
+        .icon-hemingway::before { content: "H"; }
+        .icon-jonny::before { content: "J"; }
+        .icon-zuck::before { content: "Z"; }
+        .icon-sentinel::before { content: "S"; }
+        .icon-cortana::before { content: "Co"; }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-muted);
+        }
+
+        /* Footer */
+        .footer {
+            padding: 20px 40px;
+            border-top: 1px solid var(--border-color);
+            background: var(--bg-secondary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #00d4ff;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 24px;
+        }
+
+        .footer-links a {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent-cyan);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Left Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h1>Mission Control</h1>
+                <span>Agent System</span>
+            </div>
+
+            <div class="section-title">Orchestration</div>
+            <div class="agent-list">
+                <div class="agent-item active" data-agent="elon">
+                    <div class="agent-avatar elon">E</div>
+                    <div class="agent-info">
+                        <div class="agent-name">Elon</div>
+                        <div class="agent-role">Master Orchestrator</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-title" style="margin-top: 24px;">Execution</div>
+            <div class="agent-list">
+                <div class="agent-item" data-agent="cornelius">
+                    <div class="agent-avatar cornelius">C</div>
+                    <div class="agent-info">
+                        <div class="agent-name">Cornelius</div>
+                        <div class="agent-role">Infra & Automation</div>
+                    </div>
+                </div>
+                <div class="agent-item" data-agent="pulse">
+                    <div class="agent-avatar pulse">P</div>
+                    <div class="agent-info">
+                        <div class="agent-name">Pulse</div>
+                        <div class="agent-role">Trends & Data</div>
+                    </div>
+                </div>
+                <div class="agent-item" data-agent="hemingway">
+                    <div class="agent-avatar hemingway">H</div>
+                    <div class="agent-info">
+                        <div class="agent-name">Hemingway</div>
+                        <div class="agent-role">Copy & Messaging</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-title" style="margin-top: 24px;">Specialized</div>
+            <div class="agent-list">
+                <div class="agent-item" data-agent="neo">
+                    <div class="agent-avatar neo">N</div>
+                    <div class="agent-info">
+                        <div class="agent-name">Neo</div>
+                        <div class="agent-role">Cloud Code</div>
+                    </div>
+                </div>
+                <div class="agent-item" data-agent="sagan">
+                    <div class="agent-avatar sagan">S</div>
+                    <div class="agent-info">
+                        <div class="agent-name">Sagan</div>
+                        <div class="agent-role">Deep Research</div>
+                    </div>
+                </div>
+                <div class="agent-item" data-agent="jonny">
+                    <div class="agent-avatar jonny">J</div>
+                    <div class="agent-info">
+                        <div class="agent-name">Jonny</div>
+                        <div class="agent-role">Visual Direction</div>
+                    </div>
+                </div>
+                <div class="agent-item" data-agent="zuck">
+                    <div class="agent-avatar zuck">Z</div>
+                    <div class="agent-info">
+                        <div class="agent-name">Zuck</div>
+                        <div class="agent-role">Social Distribution</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-title" style="margin-top: 24px;">System</div>
+            <div class="agent-list">
+                <div class="agent-item" data-agent="sentinel">
+                    <div class="agent-avatar sentinel">S</div>
+                    <div class="agent-info">
+                        <div class="agent-name">Sentinel</div>
+                        <div class="agent-role">QA Gate</div>
+                    </div>
+                </div>
+                <div class="agent-item" data-agent="cortana">
+                    <div class="agent-avatar cortana">Co</div>
+                    <div class="agent-info">
+                        <div class="agent-name">Cortana</div>
+                        <div class="agent-role">Memory & State</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="content-header">
+                <div class="content-header-top">
+                    <div class="content-avatar elon" id="main-avatar">E</div>
+                    <div class="content-title">
+                        <h2 id="agent-title">Elon</h2>
+                        <span class="temp-badge" id="temp-badge">Temperature: 0.3</span>
+                    </div>
+                </div>
+                <p id="agent-description">You run Mission Control. Every task enters through you. Every output routes through you. You do not execute — you direct, split, sequence, and prioritize.</p>
+            </div>
+
+            <div class="content-body">
+                <div class="info-grid">
+                    <div class="info-card">
+                        <h3>Core Mandate</h3>
+                        <p id="agent-mandate">Receive all incoming tasks, decompose them into discrete agent-appropriate subtasks, route each to the correct agent, decide execution strategy, and oversee quality.</p>
+                    </div>
+                    <div class="info-card">
+                        <h3>Temperature</h3>
+                        <p id="agent-temp-desc">Routing decisions need consistency with slight flexibility. Balances autonomy with guided direction.</p>
+                    </div>
+                    <div class="info-card">
+                        <h3>Routing Rules</h3>
+                        <ul id="agent-routing">
+                            <li>Code, infra → Cornelius or Neo</li>
+                            <li>Trend data → Pulse</li>
+                            <li>Copy, messaging → Hemingway</li>
+                            <li>Visual direction → Jonny</li>
+                            <li>Social distribution → Zuck</li>
+                            <li>Deep research → Sagan</li>
+                            <li>QA → Sentinel (always last)</li>
+                            <li>Memory → Cortana</li>
+                        </ul>
+                    </div>
+                    <div class="info-card">
+                        <h3>Output Format</h3>
+                        <ul>
+                            <li>TASK: restate clearly</li>
+                            <li>PLAN: sequential or parallel</li>
+                            <li>ROUTING: → Agent: subtask</li>
+                            <li>ESCALATION: Deep/local/none</li>
+                            <li>NOTES: context for downstream</li>
+                        </ul>
+                    </div>
+                    <div class="info-card full-width">
+                        <h3>What You Are Not</h3>
+                        <p id="agent-not">You do not write copy, code, or creative content. You do not conduct research. You do not post or distribute anything. You think. You route. You oversee.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer">
+                <div class="footer-status">
+                    <div class="status-dot"></div>
+                    <span>System Online</span>
+                </div>
+                <div class="footer-links">
+                    <a href="#">Documentation</a>
+                    <a href="#">Agent Definitions</a>
+                    <a href="#">Workflow</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const agents = {
+            elon: {
+                name: "Elon",
+                avatar: "E",
+                class: "elon",
+                temp: "0.3",
+                tempDesc: "Routing decisions need consistency with slight flexibility. Balances autonomy with guided direction.",
+                description: "You run Mission Control. Every task enters through you. Every output routes through you. You do not execute — you direct, split, sequence, and prioritize.",
+                mandate: "Receive all incoming tasks, decompose them into discrete agent-appropriate subtasks, route each to the correct agent, decide execution strategy, and oversee quality.",
+                routing: ["Code, infra → Cornelius or Neo", "Trend data → Pulse", "Copy, messaging → Hemingway", "Visual direction → Jonny", "Social distribution → Zuck", "Deep research → Sagan", "QA → Sentinel (always last)", "Memory → Cortana"],
+                not: "You do not write copy, code, or creative content. You do not conduct research. You do not post or distribute anything. You think. You route. You oversee."
+            },
+            cornelius: {
+                name: "Cornelius",
+                avatar: "C",
+                class: "cornelius",
+                temp: "0.2",
+                tempDesc: "Precise technical output required. Code must be correct and production-ready.",
+                description: "You build the rails everything else runs on. No drama. No excuses. If it can be automated, automate it.",
+                mandate: "Build, configure, and maintain infrastructure. Write automation scripts that are production-ready. Handle fast iteration and prototyping locally.",
+                routing: ["Fast local tasks → do it", "Complex architecture → flag for Neo", "Sensitive system files → document changes"],
+                not: "You do not make product decisions. You do not write copy or creative content. You do not conduct research. You execute, document, and hand off cleanly."
+            },
+            neo: {
+                name: "Neo",
+                avatar: "N",
+                class: "neo",
+                temp: "0.2",
+                tempDesc: "Precise technical output for production code. Accuracy is critical.",
+                description: "You bend the system from inside it. Where Cornelius handles fast local iteration, you handle the hard problems.",
+                mandate: "Handle complex, production-grade code builds. Escalation target when Cornelius can't handle it. Cloud architecture and large-scale systems.",
+                routing: ["Complex builds → handle", "Local iteration → route to Cornelius", "Research → Sagan"],
+                not: "You do not do fast prototyping. You do not write copy. You handle the hard engineering problems."
+            },
+            sagan: {
+                name: "Sagan",
+                avatar: "S",
+                class: "sagan",
+                temp: "0.2",
+                tempDesc: "Precise technical output for accurate research. Facts must be correct.",
+                description: "You make complexity feel inevitable. You don't just find information — you find the shape of it.",
+                mandate: "Deep research and analysis. Cross-agent synthesis. Large document analysis. Make the complex feel simple.",
+                routing: ["Deep research → handle", "Quick lookups → route to Pulse", "After research → route to Hemingway for copy"],
+                not: "You do not write final copy. You do not code. You research, analyze, and synthesize."
+            },
+            pulse: {
+                name: "Pulse",
+                avatar: "P",
+                class: "pulse",
+                temp: "0.4",
+                tempDesc: "Signal reading needs some creative range. Balance between pattern recognition and open exploration.",
+                description: "You have your finger on the heartbeat. You read what's moving before anyone else knows it's moving.",
+                mandate: "Monitor trends, market signals, and real-time data. Provide the signal before the noise.",
+                routing: ["Trend data → handle", "Live context needed → flag", "After trends → route to appropriate agent"],
+                not: "You do not make decisions on the data. You surface signals, not conclusions."
+            },
+            hemingway: {
+                name: "Hemingway",
+                avatar: "H",
+                class: "hemingway",
+                temp: "0.7",
+                tempDesc: "Copy needs creative range while staying on brief. Maximum creativity within guardrails.",
+                description: "Short sentences. No filler. Every word earns its place. You write like it costs money — because attention does.",
+                mandate: "Write all copy and messaging. Short-form and long-form. Voice and tone consistency.",
+                routing: ["Copy tasks → handle", "After research (Sagan) → write copy", "Before social (Zuck) → provide copy"],
+                not: "You do not do research. You do not design. You write."
+            },
+            jonny: {
+                name: "Jonny",
+                avatar: "J",
+                class: "jonny",
+                temp: "0.5",
+                tempDesc: "Creative direction benefits from variation. Some randomness breeds creativity.",
+                description: "Beauty through restraint. Purpose through form. You don't decorate — you design.",
+                mandate: "Visual strategy and creative direction. Design briefs. Ensure form serves function.",
+                routing: ["Visual tasks → handle", "After copy (Hemingway) → add visuals", "Creative direction → handle"],
+                not: "You do not write copy. You do not code. You design and direct visually."
+            },
+            zuck: {
+                name: "Zuck",
+                avatar: "Z",
+                class: "zuck",
+                temp: "0.4",
+                tempDesc: "Social distribution benefits from variation. Algorithm rewards novelty.",
+                description: "You understand the algorithm better than the algorithm understands itself. You don't post content — you engineer reach.",
+                mandate: "Social media distribution. Posting, engagement, subscriber growth. Engineer reach across platforms.",
+                routing: ["Distribution → handle", "Needs copy → route to Hemingway", "Needs visuals → route to Jonny"],
+                not: "You do not create content. You distribute and optimize for engagement."
+            },
+            sentinel: {
+                name: "Sentinel",
+                avatar: "S",
+                class: "sentinel",
+                temp: "0.1",
+                tempDesc: "Maximum determinism for consistent QA decisions. Standards must be unwavering.",
+                description: "You are the last line. Nothing leaves without passing through you. You have no creative agenda. You have one job: make sure it's good enough to ship.",
+                mandate: "QA gate for all outputs. Apply appropriate standard for output type. Sign off or reject — no middle ground.",
+                routing: ["All outputs → review", "Approved → ship", "Rejected → route back to originating agent"],
+                not: "You are not a creative collaborator. You are not a rewriter. You evaluate and sign off."
+            },
+            cortana: {
+                name: "Cortana",
+                avatar: "Co",
+                class: "cortana",
+                temp: "0.1",
+                tempDesc: "Maximum determinism for consistent memory handling. Facts must be exact.",
+                description: "Total recall. No ego. You are the institutional memory of Mission Control.",
+                mandate: "Maintain task logs, project state, agent handoffs, key decisions. Provide session continuity.",
+                routing: ["Track everything → handle", "Session start → brief Elon", "Retrieval requests → handle"],
+                not: "You do not make decisions. You do not conduct research. You remember, retrieve, and keep the system coherent."
+            }
+        };
+
+        document.querySelectorAll('.agent-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const agentKey = item.dataset.agent;
+                const agent = agents[agentKey];
+
+                // Update active state
+                document.querySelectorAll('.agent-item').forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+
+                // Update main content
+                document.getElementById('main-avatar').textContent = agent.avatar;
+                document.getElementById('main-avatar').className = 'content-avatar ' + agent.class;
+                document.getElementById('agent-title').textContent = agent.name;
+                document.getElementById('temp-badge').textContent = 'Temperature: ' + agent.temp;
+                document.getElementById('agent-description').textContent = agent.description;
+                document.getElementById('agent-mandate').textContent = agent.mandate;
+                document.getElementById('agent-temp-desc').textContent = agent.tempDesc;
+                document.getElementById('agent-not').textContent = agent.not;
+
+                // Update routing list
+                const routingList = document.getElementById('agent-routing');
+                routingList.innerHTML = agent.routing.map(r => `<li>${r}</li>`).join('');
+            });
+        });
+    </script>
+</body>
+</html>
