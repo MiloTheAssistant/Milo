@@ -6,779 +6,175 @@
     <title>Mission Control</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
-            --bg-primary: #0a0a0f;
-            --bg-secondary: #12121a;
-            --bg-tertiary: #1a1a24;
-            --bg-card: #16161f;
-            --border-color: #2a2a3a;
-            --text-primary: #ffffff;
-            --text-secondary: #8888a0;
-            --text-muted: #55556a;
-            --accent-cyan: #00d4ff;
-            --accent-red: #ff6b6b;
-            --accent-green: #4ecdc4;
-            --accent-purple: #9b59b6;
-            --accent-orange: #ff9f43;
-            --accent-blue: #5f9ea0;
-            --accent-pink: #fd79a8;
-            --accent-gold: #fdcb6e;
+            --bg-primary: #0a0a0f; --bg-secondary: #12121a; --bg-tertiary: #1a1a24;
+            --bg-card: #16161f; --border-color: #2a2a3a;
+            --text-primary: #ffffff; --text-secondary: #8888a0; --text-muted: #55556a;
+            --accent-cyan: #00d4ff; --accent-red: #ff6b6b; --accent-green: #4ecdc4;
+            --accent-purple: #9b59b6; --accent-orange: #ff9f43; --accent-blue: #5f9ea0;
+            --accent-pink: #fd79a8; --accent-gold: #fdcb6e;
             --sidebar-width: 260px;
         }
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg-primary); color: var(--text-primary); height: 100vh; overflow: hidden; }
+        .container { display: flex; height: 100vh; }
 
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            height: 100vh;
-            overflow: hidden;
-        }
+        /* Sidebar */
+        .sidebar { width: var(--sidebar-width); background: var(--bg-secondary); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; padding: 16px 12px; overflow-y: auto; position: fixed; height: 100vh; left: 0; top: 0; z-index: 100; transition: transform 0.3s ease; }
+        .sidebar.hidden { transform: translateX(-100%); }
+        .sidebar-header { padding: 0 8px 16px; border-bottom: 1px solid var(--border-color); margin-bottom: 12px; }
+        .sidebar-header h1 { font-size: 16px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; }
+        .sidebar-header span { font-size: 9px; color: var(--accent-cyan); letter-spacing: 3px; text-transform: uppercase; }
+        .nav-item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 10px; cursor: pointer; transition: all 0.2s ease; border: 1px solid transparent; margin-bottom: 2px; }
+        .nav-item:hover { background: var(--bg-tertiary); border-color: var(--border-color); }
+        .nav-item.active { background: linear-gradient(135deg, rgba(0, 212, 255, 0.15), rgba(0, 212, 255, 0.05)); border-color: var(--accent-cyan); }
+        .nav-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; background: var(--bg-tertiary); }
+        .nav-item.active .nav-icon { background: var(--accent-cyan); color: #000; box-shadow: 0 0 20px rgba(0, 212, 255, 0.4); }
+        .nav-label { font-size: 13px; font-weight: 500; color: var(--text-secondary); }
+        .nav-item.active .nav-label { color: var(--text-primary); font-weight: 600; }
+        .nav-section-title { font-size: 9px; color: var(--text-muted); letter-spacing: 2px; text-transform: uppercase; padding: 12px 12px 8px; }
 
-        .container {
-            display: flex;
-            height: 100vh;
-        }
+        /* Mobile */
+        .menu-toggle { display: none; position: fixed; top: 16px; left: 16px; z-index: 200; width: 44px; height: 44px; border-radius: 12px; background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-primary); font-size: 20px; cursor: pointer; align-items: center; justify-content: center; }
+        .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.6); z-index: 90; }
+        .sidebar-overlay.visible { display: block; }
 
-        /* Left Sidebar */
-        .sidebar {
-            width: var(--sidebar-width);
-            background: var(--bg-secondary);
-            border-right: 1px solid var(--border-color);
-            display: flex;
-            flex-direction: column;
-            padding: 16px 12px;
-            overflow-y: auto;
-            position: fixed;
-            height: 100vh;
-            left: 0;
-            top: 0;
-            z-index: 100;
-            transition: transform 0.3s ease;
-        }
+        /* Main */
+        .main-content { flex: 1; margin-left: var(--sidebar-width); display: flex; flex-direction: column; overflow: hidden; height: 100vh; transition: margin-left 0.3s ease; }
+        .page { display: none; flex-direction: column; flex: 1; overflow: hidden; }
+        .page.active { display: flex; }
+        .page-header { padding: 20px 28px; border-bottom: 1px solid var(--border-color); background: var(--bg-secondary); }
+        .page-header-top { display: flex; align-items: center; gap: 14px; margin-bottom: 10px; }
+        .page-avatar { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; }
+        .page-title h2 { font-size: 20px; font-weight: 700; }
+        .page-header p { color: var(--text-secondary); font-size: 13px; }
+        .page-content { flex: 1; padding: 20px 28px; overflow-y: auto; }
+        .footer { padding: 12px 28px; border-top: 1px solid var(--border-color); background: var(--bg-secondary); display: flex; justify-content: space-between; align-items: center; }
+        .footer-status { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--text-secondary); }
+        .status-dot-large { width: 8px; height: 8px; border-radius: 50%; background: var(--accent-cyan); animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
 
-        .sidebar.hidden {
-            transform: translateX(-100%);
-        }
+        /* Home */
+        .home-content { padding: 24px 32px; overflow-y: auto; flex: 1; }
+        .hero { margin-bottom: 28px; }
+        .hero-greeting { font-size: 12px; color: var(--accent-cyan); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 6px; }
+        .hero h1 { font-size: 32px; font-weight: 800; background: linear-gradient(135deg, #fff 0%, var(--accent-cyan) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 6px; }
+        .hero-subtitle { font-size: 14px; color: var(--text-secondary); }
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 28px; }
+        .stat-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 14px; padding: 20px; position: relative; overflow: hidden; transition: all 0.2s; }
+        .stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--stat-color, var(--accent-cyan)); }
+        .stat-card:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3); }
+        .stat-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; margin-bottom: 12px; background: var(--bg-tertiary); }
+        .stat-value { font-size: 28px; font-weight: 700; margin-bottom: 2px; }
+        .stat-label { font-size: 11px; color: var(--text-secondary); }
+        .two-column { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .section-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 14px; padding: 20px; }
+        .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+        .section-title { font-size: 14px; font-weight: 600; }
+        .section-badge { padding: 4px 10px; border-radius: 20px; font-size: 10px; font-weight: 600; background: rgba(78, 205, 196, 0.15); color: var(--accent-green); }
+        .section-badge.warning { background: rgba(255, 159, 67, 0.15); color: var(--accent-orange); }
+        .section-badge.error { background: rgba(255, 107, 107, 0.15); color: var(--accent-red); }
 
-        .sidebar-header {
-            padding: 0 8px 16px;
-            border-bottom: 1px solid var(--border-color);
-            margin-bottom: 12px;
-        }
+        /* Agent Grid */
+        .agent-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+        .agent-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 14px; padding: 18px; transition: all 0.2s; }
+        .agent-card:hover { border-color: var(--accent-cyan); transform: translateY(-3px); }
+        .agent-card.disabled { opacity: 0.5; }
+        .agent-card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+        .agent-card-avatar { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; flex-shrink: 0; }
+        .agent-card-title h3 { font-size: 15px; font-weight: 600; margin-bottom: 2px; }
+        .agent-card-title .role { font-size: 11px; color: var(--text-secondary); }
+        .agent-card-bio { font-size: 12px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 12px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .agent-controls { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+        .agent-meta-item { padding: 3px 10px; border-radius: 20px; font-size: 10px; font-weight: 600; background: var(--bg-tertiary); color: var(--text-secondary); }
+        .toggle-switch { position: relative; width: 40px; height: 22px; flex-shrink: 0; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .toggle-slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--bg-tertiary); border: 1px solid var(--border-color); transition: 0.2s; border-radius: 22px; }
+        .toggle-slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 2px; bottom: 2px; background-color: var(--text-secondary); transition: 0.2s; border-radius: 50%; }
+        .toggle-switch input:checked + .toggle-slider { background-color: var(--accent-green); border-color: var(--accent-green); }
+        .toggle-switch input:checked + .toggle-slider:before { transform: translateX(18px); background-color: #fff; }
 
-        .sidebar-header h1 {
-            font-size: 16px;
-            font-weight: 700;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            color: var(--text-primary);
-        }
+        /* Lists */
+        .list-item { display: flex; align-items: center; justify-content: space-between; padding: 14px; background: var(--bg-tertiary); border-radius: 10px; margin-bottom: 8px; }
+        .list-item:last-child { margin-bottom: 0; }
+        .list-item-left { display: flex; align-items: center; gap: 12px; }
+        .list-item-icon { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+        .list-item-title { font-size: 13px; font-weight: 600; }
+        .list-item-subtitle { font-size: 11px; color: var(--text-secondary); }
+        .list-item-badge { padding: 4px 10px; border-radius: 20px; font-size: 10px; font-weight: 600; }
+        .list-item-badge.active { background: rgba(78, 205, 196, 0.15); color: var(--accent-green); }
+        .list-item-badge.error { background: rgba(255, 107, 107, 0.15); color: var(--accent-red); }
+        .list-item-badge.inactive { background: var(--bg-card); color: var(--text-muted); }
 
-        .sidebar-header span {
-            font-size: 9px;
-            color: var(--accent-cyan);
-            letter-spacing: 3px;
-            text-transform: uppercase;
-        }
-
-        .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 10px 12px;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            border: 1px solid transparent;
-            margin-bottom: 2px;
-        }
-
-        .nav-item:hover {
-            background: var(--bg-tertiary);
-            border-color: var(--border-color);
-        }
-
-        .nav-item.active {
-            background: linear-gradient(135deg, rgba(0, 212, 255, 0.15), rgba(0, 212, 255, 0.05));
-            border-color: var(--accent-cyan);
-        }
-
-        .nav-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            flex-shrink: 0;
-            background: var(--bg-tertiary);
-        }
-
-        .nav-item.active .nav-icon {
-            background: var(--accent-cyan);
-            color: #000;
-            box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
-        }
-
-        .nav-label {
-            font-size: 13px;
-            font-weight: 500;
-            color: var(--text-secondary);
-        }
-
-        .nav-item.active .nav-label {
-            color: var(--text-primary);
-            font-weight: 600;
-        }
-
-        .nav-section-title {
-            font-size: 9px;
-            color: var(--text-muted);
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            padding: 12px 12px 8px;
-        }
-
-        /* Mobile Menu Toggle */
-        .menu-toggle {
-            display: none;
-            position: fixed;
-            top: 16px;
-            left: 16px;
-            z-index: 200;
-            width: 44px;
-            height: 44px;
-            border-radius: 12px;
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            color: var(--text-primary);
-            font-size: 20px;
-            cursor: pointer;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* Main Content */
-        .main-content {
-            flex: 1;
-            margin-left: var(--sidebar-width);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            height: 100vh;
-            transition: margin-left 0.3s ease;
-        }
-
-        /* Home Page */
-        .home-page {
-            flex: 1;
-            padding: 24px 32px;
-            overflow-y: auto;
-            display: block;
-        }
-
-        .home-page.hidden {
-            display: none;
-        }
-
-        /* Hero Section */
-        .hero {
-            margin-bottom: 32px;
-        }
-
-        .hero-greeting {
-            font-size: 12px;
-            color: var(--accent-cyan);
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            margin-bottom: 6px;
-        }
-
-        .hero h1 {
-            font-size: 32px;
-            font-weight: 800;
-            background: linear-gradient(135deg, #fff 0%, var(--accent-cyan) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 6px;
-        }
-
-        .hero-subtitle {
-            font-size: 14px;
-            color: var(--text-secondary);
-        }
-
-        /* Stats Grid */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 16px;
-            margin-bottom: 32px;
-        }
-
-        .stat-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 14px;
-            padding: 20px;
-            position: relative;
-            overflow: hidden;
-            transition: all 0.2s;
-        }
-
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: var(--stat-color, var(--accent-cyan));
-        }
-
-        .stat-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-        }
-
-        .stat-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            margin-bottom: 12px;
-            background: var(--bg-tertiary);
-        }
-
-        .stat-value {
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 2px;
-        }
-
-        .stat-label {
-            font-size: 11px;
-            color: var(--text-secondary);
-        }
-
-        /* Two Column Layout */
-        .two-column {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
-        .section-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 14px;
-            padding: 20px;
-        }
-
-        .section-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 16px;
-        }
-
-        .section-title {
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        .section-badge {
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 10px;
-            font-weight: 600;
-            background: rgba(78, 205, 196, 0.15);
-            color: var(--accent-green);
-        }
-
-        /* Agent Cards Mini */
-        .agent-mini-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-        }
-
-        .agent-mini-card {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px;
-            background: var(--bg-tertiary);
-            border-radius: 10px;
-            transition: all 0.2s;
-            cursor: pointer;
-        }
-
-        .agent-mini-card:hover {
-            background: var(--bg-secondary);
-            transform: translateX(4px);
-        }
-
-        .agent-mini-avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 11px;
-            font-weight: 700;
-        }
-
-        .agent-mini-info h4 {
-            font-size: 12px;
-            font-weight: 600;
-            margin-bottom: 1px;
-        }
-
-        .agent-mini-info p {
-            font-size: 10px;
-            color: var(--text-secondary);
-        }
-
-        /* Activity List */
-        .activity-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .activity-item {
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-            padding: 10px;
-            background: var(--bg-tertiary);
-            border-radius: 10px;
-        }
-
-        .activity-dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            margin-top: 5px;
-            flex-shrink: 0;
-        }
-
-        .activity-content h4 {
-            font-size: 12px;
-            font-weight: 500;
-            margin-bottom: 2px;
-        }
-
-        .activity-content p {
-            font-size: 11px;
-            color: var(--text-secondary);
-        }
+        /* Activity */
+        .activity-list { display: flex; flex-direction: column; gap: 10px; }
+        .activity-item { display: flex; align-items: flex-start; gap: 10px; padding: 12px; background: var(--bg-tertiary); border-radius: 10px; }
+        .activity-dot { width: 6px; height: 6px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
+        .activity-content h4 { font-size: 12px; font-weight: 500; margin-bottom: 2px; }
+        .activity-content p { font-size: 11px; color: var(--text-secondary); }
 
         /* Quick Actions */
-        .quick-actions-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-        }
-
-        .quick-action-btn {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 14px;
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-align: left;
-        }
-
-        .quick-action-btn:hover {
-            background: var(--bg-secondary);
-            border-color: var(--accent-cyan);
-            transform: translateY(-2px);
-        }
-
-        .quick-action-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-            flex-shrink: 0;
-        }
-
-        .quick-action-text h4 {
-            font-size: 12px;
-            font-weight: 600;
-            margin-bottom: 1px;
-        }
-
-        .quick-action-text p {
-            font-size: 10px;
-            color: var(--text-secondary);
-        }
+        .quick-actions-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        .quick-action-btn { display: flex; align-items: center; gap: 10px; padding: 14px; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: 10px; cursor: pointer; transition: all 0.2s; text-align: left; }
+        .quick-action-btn:hover { background: var(--bg-secondary); border-color: var(--accent-cyan); transform: translateY(-2px); }
+        .quick-action-icon { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+        .quick-action-text h4 { font-size: 12px; font-weight: 600; margin-bottom: 1px; }
+        .quick-action-text p { font-size: 10px; color: var(--text-secondary); }
 
         /* Status Bar */
-        .status-bar {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            padding: 12px 20px;
-            background: var(--bg-card);
-            border-top: 1px solid var(--border-color);
-            flex-wrap: wrap;
-        }
-
-        .status-item {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 11px;
-            color: var(--text-secondary);
-        }
-
-        .status-dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-        }
-
+        .status-bar { display: flex; align-items: center; gap: 16px; padding: 12px 20px; background: var(--bg-card); border-top: 1px solid var(--border-color); flex-wrap: wrap; }
+        .status-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text-secondary); }
+        .status-dot { width: 6px; height: 6px; border-radius: 50%; }
         .status-dot.green { background: var(--accent-green); box-shadow: 0 0 8px var(--accent-green); }
         .status-dot.cyan { background: var(--accent-cyan); box-shadow: 0 0 8px var(--accent-cyan); }
         .status-dot.orange { background: var(--accent-orange); box-shadow: 0 0 8px var(--accent-orange); }
+        .status-dot.red { background: var(--accent-red); box-shadow: 0 0 8px var(--accent-red); }
 
-        /* Footer */
-        .footer {
-            padding: 12px 32px;
-            border-top: 1px solid var(--border-color);
-            background: var(--bg-secondary);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .footer-status {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 11px;
-            color: var(--text-secondary);
-        }
-
-        .status-dot-large {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--accent-cyan);
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        /* Other Pages */
-        .content-body {
-            display: none;
-            flex: 1;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        .content-body.active {
-            display: flex;
-        }
-
-        .page-header {
-            padding: 20px 28px;
-            border-bottom: 1px solid var(--border-color);
-            background: var(--bg-secondary);
-        }
-
-        .page-header-top {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            margin-bottom: 10px;
-        }
-
-        .page-avatar {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            font-weight: 700;
-        }
-
-        .page-title h2 {
-            font-size: 20px;
-            font-weight: 700;
-        }
-
-        .page-header p {
-            color: var(--text-secondary);
-            font-size: 13px;
-        }
-
-        .page-content {
-            flex: 1;
-            padding: 20px 28px;
-            overflow-y: auto;
-        }
-
-        /* Agents Grid - Tighter */
-        .agents-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 14px;
-        }
-
-        .agent-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 14px;
-            padding: 18px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .agent-card:hover {
-            border-color: var(--accent-cyan);
-            transform: translateY(-3px);
-        }
-
-        .agent-card-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 12px;
-        }
-
-        .agent-card-avatar {
-            width: 44px;
-            height: 44px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            font-weight: 700;
-            flex-shrink: 0;
-        }
-
-        .agent-card-title h3 {
-            font-size: 15px;
-            font-weight: 600;
-            margin-bottom: 2px;
-        }
-
-        .agent-card-title .role {
-            font-size: 11px;
-            color: var(--text-secondary);
-        }
-
-        .agent-card-bio {
-            font-size: 12px;
-            color: var(--text-secondary);
-            line-height: 1.5;
-            margin-bottom: 12px;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .agent-card-meta {
-            display: flex;
-            gap: 8px;
-        }
-
-        .agent-meta-item {
-            padding: 3px 10px;
-            border-radius: 20px;
-            font-size: 10px;
-            font-weight: 600;
-            background: var(--bg-tertiary);
-            color: var(--text-secondary);
-        }
-
-        .agent-controls {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 8px;
-        }
-
-        .toggle-switch {
-            position: relative;
-            width: 40px;
-            height: 22px;
-            flex-shrink: 0;
-        }
-
-        .toggle-switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .toggle-slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: var(--bg-tertiary);
-            border: 1px solid var(--border-color);
-            transition: 0.2s;
-            border-radius: 22px;
-        }
-
-        .toggle-slider:before {
-            position: absolute;
-            content: "";
-            height: 16px;
-            width: 16px;
-            left: 2px;
-            bottom: 2px;
-            background-color: var(--text-secondary);
-            transition: 0.2s;
-            border-radius: 50%;
-        }
-
-        .toggle-switch input:checked + .toggle-slider {
-            background-color: var(--accent-green);
-            border-color: var(--accent-green);
-        }
-
-        .toggle-switch input:checked + .toggle-slider:before {
-            transform: translateX(18px);
-            background-color: #fff;
-        }
+        /* Cron Jobs */
+        .cron-grid { display: flex; flex-direction: column; gap: 12px; }
+        .cron-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; }
+        .cron-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+        .cron-title { font-size: 14px; font-weight: 600; }
+        .cron-schedule { font-size: 11px; color: var(--accent-cyan); background: rgba(0, 212, 255, 0.1); padding: 4px 10px; border-radius: 20px; }
+        .cron-info { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .cron-info-item { background: var(--bg-tertiary); padding: 10px; border-radius: 8px; }
+        .cron-info-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px; }
+        .cron-info-value { font-size: 12px; font-weight: 600; }
 
         /* Calendar */
-        .calendar-grid {
-            display: grid;
-            gap: 12px;
-        }
+        .calendar-grid { display: grid; gap: 12px; }
+        .calendar-event { display: flex; align-items: center; gap: 14px; padding: 14px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; }
+        .calendar-date { width: 44px; text-align: center; flex-shrink: 0; }
+        .calendar-date .day { font-size: 20px; font-weight: 700; }
+        .calendar-date .weekday { font-size: 10px; color: var(--text-secondary); text-transform: uppercase; }
+        .calendar-info { flex: 1; min-width: 0; }
+        .calendar-info h4 { font-size: 13px; font-weight: 600; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .calendar-info p { font-size: 11px; color: var(--text-secondary); }
+        .calendar-time { padding: 4px 10px; border-radius: 20px; font-size: 10px; font-weight: 600; background: var(--bg-tertiary); color: var(--text-secondary); white-space: nowrap; }
+        .calendar-empty { padding: 40px; text-align: center; color: var(--text-secondary); }
 
-        .calendar-event {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            padding: 14px;
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-        }
+        /* Projects */
+        .project-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+        .project-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 14px; padding: 18px; }
+        .project-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+        .project-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+        .project-title { font-size: 15px; font-weight: 600; }
+        .project-url { font-size: 11px; color: var(--accent-cyan); }
+        .project-desc { font-size: 12px; color: var(--text-secondary); margin-bottom: 12px; line-height: 1.5; }
+        .project-status { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--accent-green); }
 
-        .calendar-date {
-            width: 44px;
-            text-align: center;
-            flex-shrink: 0;
-        }
-
-        .calendar-date .day {
-            font-size: 20px;
-            font-weight: 700;
-        }
-
-        .calendar-date .weekday {
-            font-size: 10px;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-        }
-
-        .calendar-info {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .calendar-info h4 {
-            font-size: 13px;
-            font-weight: 600;
-            margin-bottom: 2px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .calendar-info p {
-            font-size: 11px;
-            color: var(--text-secondary);
-        }
-
-        .calendar-time {
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 10px;
-            font-weight: 600;
-            background: var(--bg-tertiary);
-            color: var(--text-secondary);
-            white-space: nowrap;
-        }
-
-        .calendar-error {
-            padding: 20px;
-            background: var(--bg-card);
-            border: 1px solid var(--accent-orange);
-            border-radius: 12px;
-            text-align: center;
-        }
-
-        .calendar-error p {
-            color: var(--accent-orange);
-            margin-bottom: 10px;
-            font-size: 13px;
-        }
-
-        .calendar-error code {
-            display: block;
-            padding: 10px;
-            background: var(--bg-tertiary);
-            border-radius: 8px;
-            font-size: 11px;
-            color: var(--text-secondary);
-            word-break: break-all;
-        }
+        /* Memory */
+        .memory-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 20px; }
+        .memory-stat { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; text-align: center; }
+        .memory-stat-value { font-size: 24px; font-weight: 700; color: var(--accent-cyan); margin-bottom: 4px; }
+        .memory-stat-label { font-size: 11px; color: var(--text-secondary); }
 
         /* Scrollbar */
-        ::-webkit-scrollbar {
-            width: 5px;
-        }
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: var(--bg-primary); }
+        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 3px; }
 
-        ::-webkit-scrollbar-track {
-            background: var(--bg-primary);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--border-color);
-            border-radius: 3px;
-        }
-
-        /* Icon Colors */
+        /* Icons */
         .icon-tasks { background: var(--accent-cyan); color: #000; }
         .icon-agents { background: var(--accent-purple); }
         .icon-content { background: var(--accent-blue); }
@@ -804,711 +200,435 @@
         .agent-sentinel { background: linear-gradient(135deg, #ff6b6b, #ee5a5a); }
         .agent-cortana { background: linear-gradient(135deg, #9b59b6, #8e44ad); }
 
-        /* ==================== RESPONSIVE ==================== */
-
-        /* Tablet */
+        /* Responsive */
         @media (max-width: 1024px) {
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .two-column {
-                grid-template-columns: 1fr;
-            }
-
-            .agents-grid {
-                grid-template-columns: 1fr;
-            }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .two-column { grid-template-columns: 1fr; }
+            .agent-grid { grid-template-columns: 1fr; }
+            .project-grid { grid-template-columns: 1fr; }
+            .memory-stats { grid-template-columns: repeat(2, 1fr); }
         }
-
-        /* Mobile */
         @media (max-width: 768px) {
-            :root {
-                --sidebar-width: 100%;
-            }
-
-            .menu-toggle {
-                display: flex;
-            }
-
-            .sidebar {
-                width: 280px;
-                transform: translateX(-100%);
-            }
-
-            .sidebar.visible {
-                transform: translateX(0);
-            }
-
-            .main-content {
-                margin-left: 0;
-            }
-
-            .home-page {
-                padding: 60px 16px 16px;
-            }
-
-            .hero h1 {
-                font-size: 26px;
-            }
-
-            .hero-greeting {
-                font-size: 10px;
-            }
-
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 10px;
-            }
-
-            .stat-card {
-                padding: 14px;
-            }
-
-            .stat-value {
-                font-size: 24px;
-            }
-
-            .stat-icon {
-                width: 32px;
-                height: 32px;
-                font-size: 14px;
-            }
-
-            .stat-label {
-                font-size: 10px;
-            }
-
-            .section-card {
-                padding: 14px;
-            }
-
-            .agent-mini-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .quick-actions-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .page-header {
-                padding: 16px;
-                padding-top: 60px;
-            }
-
-            .page-header-top {
-                gap: 10px;
-            }
-
-            .page-avatar {
-                width: 40px;
-                height: 40px;
-                font-size: 16px;
-            }
-
-            .page-title h2 {
-                font-size: 18px;
-            }
-
-            .page-header p {
-                font-size: 12px;
-            }
-
-            .page-content {
-                padding: 16px;
-            }
-
-            .agents-grid {
-                grid-template-columns: 1fr;
-                gap: 12px;
-            }
-
-            .agent-card {
-                padding: 14px;
-            }
-
-            .agent-card-avatar {
-                width: 38px;
-                height: 38px;
-                font-size: 12px;
-            }
-
-            .agent-card-title h3 {
-                font-size: 14px;
-            }
-
-            .agent-card-bio {
-                font-size: 11px;
-                -webkit-line-clamp: 2;
-            }
-
-            .footer {
-                padding: 10px 16px;
-            }
-
-            .status-bar {
-                padding: 10px 16px;
-            }
-
-            .calendar-event {
-                flex-wrap: wrap;
-            }
-
-            .calendar-info {
-                order: 2;
-                width: 100%;
-                margin-top: 8px;
-            }
-
-            .calendar-time {
-                order: 1;
-            }
-        }
-
-        /* Small Mobile */
-        @media (max-width: 480px) {
-            .stats-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-
-            .stat-card {
-                padding: 12px;
-            }
-
-            .stat-value {
-                font-size: 22px;
-            }
-        }
-
-        /* Overlay for mobile */
-        .sidebar-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.6);
-            z-index: 90;
-        }
-
-        .sidebar-overlay.visible {
-            display: block;
+            :root { --sidebar-width: 100%; }
+            .menu-toggle { display: flex; }
+            .sidebar { width: 280px; transform: translateX(-100%); }
+            .sidebar.visible { transform: translateX(0); }
+            .main-content { margin-left: 0; }
+            .home-content { padding: 60px 16px 16px; }
+            .hero h1 { font-size: 26px; }
+            .stats-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+            .stat-card { padding: 14px; }
+            .stat-value { font-size: 24px; }
+            .page-header { padding: 16px; padding-top: 60px; }
+            .page-content { padding: 16px; }
+            .footer { padding: 10px 16px; }
+            .status-bar { padding: 10px 16px; }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Mobile Menu Toggle -->
         <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
-
-        <!-- Sidebar Overlay -->
         <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
 
-        <!-- Left Sidebar -->
+        <!-- Sidebar -->
         <div class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <h1>Mission Control</h1>
                 <span>Agent System</span>
             </div>
-
-            <div class="nav-item active" data-page="home">
-                <div class="nav-icon">🏠</div>
-                <span class="nav-label">Home</span>
-            </div>
-
-            <div class="nav-item" data-page="tasks">
-                <div class="nav-icon">📋</div>
-                <span class="nav-label">Tasks</span>
-            </div>
-
-            <div class="nav-item" data-page="agents">
-                <div class="nav-icon">🤖</div>
-                <span class="nav-label">Agent Mgmt</span>
-            </div>
-
-            <div class="nav-item" data-page="content">
-                <div class="nav-icon">📄</div>
-                <span class="nav-label">Content</span>
-            </div>
-
-            <div class="nav-item" data-page="approvals">
-                <div class="nav-icon">✅</div>
-                <span class="nav-label">Approvals</span>
-            </div>
-
+            <div class="nav-item active" data-page="home"><div class="nav-icon">🏠</div><span class="nav-label">Home</span></div>
+            <div class="nav-item" data-page="tasks"><div class="nav-icon">📋</div><span class="nav-label">Tasks</span></div>
+            <div class="nav-item" data-page="agents"><div class="nav-icon">🤖</div><span class="nav-label">Agent Mgmt</span></div>
+            <div class="nav-item" data-page="content"><div class="nav-icon">📄</div><span class="nav-label">Content</span></div>
+            <div class="nav-item" data-page="approvals"><div class="nav-icon">✅</div><span class="nav-label">Approvals</span></div>
             <div class="nav-section-title">Organization</div>
-
-            <div class="nav-item" data-page="council">
-                <div class="nav-icon">👑</div>
-                <span class="nav-label">Council</span>
-            </div>
-
-            <div class="nav-item" data-page="calendar">
-                <div class="nav-icon">📅</div>
-                <span class="nav-label">Calendar</span>
-            </div>
-
-            <div class="nav-item" data-page="projects">
-                <div class="nav-icon">📁</div>
-                <span class="nav-label">Projects</span>
-            </div>
-
-            <div class="nav-item" data-page="memory">
-                <div class="nav-icon">🧠</div>
-                <span class="nav-label">Memory</span>
-            </div>
-
-            <div class="nav-item" data-page="docs">
-                <div class="nav-icon">📝</div>
-                <span class="nav-label">Docs</span>
-            </div>
-
+            <div class="nav-item" data-page="council"><div class="nav-icon">👑</div><span class="nav-label">Council</span></div>
+            <div class="nav-item" data-page="calendar"><div class="nav-icon">📅</div><span class="nav-label">Calendar</span></div>
+            <div class="nav-item" data-page="projects"><div class="nav-icon">📁</div><span class="nav-label">Projects</span></div>
+            <div class="nav-item" data-page="cron"><div class="nav-icon">⏰</div><span class="nav-label">Cron Jobs</span></div>
+            <div class="nav-item" data-page="memory"><div class="nav-icon">🧠</div><span class="nav-label">Memory</span></div>
+            <div class="nav-item" data-page="docs"><div class="nav-icon">📝</div><span class="nav-label">Docs</span></div>
             <div class="nav-section-title">Team</div>
-
-            <div class="nav-item" data-page="people">
-                <div class="nav-icon">👥</div>
-                <span class="nav-label">People</span>
-            </div>
-
-            <div class="nav-item" data-page="office">
-                <div class="nav-icon">🏢</div>
-                <span class="nav-label">Office</span>
-            </div>
-
-            <div class="nav-item" data-page="team">
-                <div class="nav-icon">👥</div>
-                <span class="nav-label">Team</span>
-            </div>
+            <div class="nav-item" data-page="people"><div class="nav-icon">👥</div><span class="nav-label">People</span></div>
+            <div class="nav-item" data-page="office"><div class="nav-icon">🏢</div><span class="nav-label">Office</span></div>
+            <div class="nav-item" data-page="team"><div class="nav-icon">👥</div><span class="nav-label">Team</span></div>
         </div>
 
         <!-- Main Content -->
         <div class="main-content">
-            <!-- HOME PAGE -->
-            <div class="home-page" id="page-home">
-                <div class="hero">
-                    <div class="hero-greeting">Good afternoon, Boss</div>
-                    <h1>Mission Control</h1>
-                    <p class="hero-subtitle">Everything running smoothly across your AI ecosystem</p>
-                </div>
-
-                <div class="stats-grid">
-                    <div class="stat-card" style="--stat-color: var(--accent-cyan);">
-                        <div class="stat-icon">🤖</div>
-                        <div class="stat-value">10</div>
-                        <div class="stat-label">Active Agents</div>
+            <!-- HOME -->
+            <div class="page active" id="page-home">
+                <div class="home-content">
+                    <div class="hero">
+                        <div class="hero-greeting" id="greeting">Good afternoon, Boss</div>
+                        <h1>Mission Control</h1>
+                        <p class="hero-subtitle">Everything running smoothly across your AI ecosystem</p>
                     </div>
-                    <div class="stat-card" style="--stat-color: var(--accent-green);">
-                        <div class="stat-icon">✅</div>
-                        <div class="stat-value">2</div>
-                        <div class="stat-label">Cron Jobs</div>
-                    </div>
-                    <div class="stat-card" style="--stat-color: var(--accent-purple);">
-                        <div class="stat-icon">🌐</div>
-                        <div class="stat-value">2</div>
-                        <div class="stat-label">Deployments</div>
-                    </div>
-                    <div class="stat-card" style="--stat-color: var(--accent-orange);">
-                        <div class="stat-icon">⚡</div>
-                        <div class="stat-value">4</div>
-                        <div class="stat-label">Services</div>
-                    </div>
-                </div>
-
-                <div class="two-column">
-                    <div class="section-card">
-                        <div class="section-header">
-                            <div class="section-title">🤖 Active Agents</div>
-                            <div class="section-badge">All Online</div>
+                    <div class="stats-grid">
+                        <div class="stat-card" style="--stat-color: var(--accent-cyan);">
+                            <div class="stat-icon">🤖</div>
+                            <div class="stat-value" id="stat-agents">10</div>
+                            <div class="stat-label">Active Agents</div>
                         </div>
-                        <div class="agent-mini-grid">
-                            <div class="agent-mini-card" onclick="navigateTo('agents')">
-                                <div class="agent-mini-avatar agent-elon">E</div>
-                                <div class="agent-mini-info"><h4>Elon</h4><p>Orchestrator</p></div>
-                            </div>
-                            <div class="agent-mini-card" onclick="navigateTo('agents')">
-                                <div class="agent-mini-avatar agent-cornelius">C</div>
-                                <div class="agent-mini-info"><h4>Cornelius</h4><p>Infra</p></div>
-                            </div>
-                            <div class="agent-mini-card" onclick="navigateTo('agents')">
-                                <div class="agent-mini-avatar agent-sentinel">S</div>
-                                <div class="agent-mini-info"><h4>Sentinel</h4><p>QA Gate</p></div>
-                            </div>
-                            <div class="agent-mini-card" onclick="navigateTo('agents')">
-                                <div class="agent-mini-avatar agent-cortana">Co</div>
-                                <div class="agent-mini-info"><h4>Cortana</h4><p>Memory</p></div>
-                            </div>
-                            <div class="agent-mini-card" onclick="navigateTo('agents')">
-                                <div class="agent-mini-avatar agent-pulse">P</div>
-                                <div class="agent-mini-info"><h4>Pulse</h4><p>Trends</p></div>
-                            </div>
-                            <div class="agent-mini-card" onclick="navigateTo('agents')">
-                                <div class="agent-mini-avatar agent-hemingway">H</div>
-                                <div class="agent-mini-info"><h4>Hemingway</h4><p>Copy</p></div>
-                            </div>
-                            <div class="agent-mini-card" onclick="navigateTo('agents')">
-                                <div class="agent-mini-avatar agent-neo">N</div>
-                                <div class="agent-mini-info"><h4>Neo</h4><p>Cloud</p></div>
-                            </div>
-                            <div class="agent-mini-card" onclick="navigateTo('agents')">
-                                <div class="agent-mini-avatar agent-sagan">S</div>
-                                <div class="agent-mini-info"><h4>Sagan</h4><p>Research</p></div>
-                            </div>
-                            <div class="agent-mini-card" onclick="navigateTo('agents')">
-                                <div class="agent-mini-avatar agent-jonny">J</div>
-                                <div class="agent-mini-info"><h4>Jonny</h4><p>Visual</p></div>
-                            </div>
-                            <div class="agent-mini-card" onclick="navigateTo('agents')">
-                                <div class="agent-mini-avatar agent-zuck">Z</div>
-                                <div class="agent-mini-info"><h4>Zuck</h4><p>Social</p></div>
-                            </div>
+                        <div class="stat-card" style="--stat-color: var(--accent-green);">
+                            <div class="stat-icon">⏰</div>
+                            <div class="stat-value" id="stat-crons">2</div>
+                            <div class="stat-label">Cron Jobs</div>
+                        </div>
+                        <div class="stat-card" style="--stat-color: var(--accent-purple);">
+                            <div class="stat-icon">🌐</div>
+                            <div class="stat-value" id="stat-deployments">2</div>
+                            <div class="stat-label">Deployments</div>
+                        </div>
+                        <div class="stat-card" style="--stat-color: var(--accent-orange);">
+                            <div class="stat-icon">⚡</div>
+                            <div class="stat-value" id="stat-services">4</div>
+                            <div class="stat-label">Services</div>
                         </div>
                     </div>
-
-                    <div class="section-card">
-                        <div class="section-header">
-                            <div class="section-title">📡 Recent Activity</div>
+                    <div class="two-column">
+                        <div class="section-card">
+                            <div class="section-header">
+                                <div class="section-title">🤖 Active Agents</div>
+                                <div class="section-badge" id="agents-badge">All Online</div>
+                            </div>
+                            <div id="home-agents-list"></div>
                         </div>
-                        <div class="activity-list">
-                            <div class="activity-item">
-                                <div class="activity-dot" style="background: var(--accent-cyan);"></div>
-                                <div class="activity-content"><h4>Mission Control Deployed</h4><p>Live at milo-mc.vercel.app</p></div>
+                        <div class="section-card">
+                            <div class="section-header">
+                                <div class="section-title">📡 Recent Activity</div>
                             </div>
-                            <div class="activity-item">
-                                <div class="activity-dot" style="background: var(--accent-green);"></div>
-                                <div class="activity-content"><h4>Daily Market Brief</h4><p>Feb 27, 2026 8:45 AM</p></div>
-                            </div>
-                            <div class="activity-item">
-                                <div class="activity-dot" style="background: var(--accent-purple);"></div>
-                                <div class="activity-content"><h4>Coldstone Website</h4><p>Deployed to Vercel</p></div>
-                            </div>
-                            <div class="activity-item">
-                                <div class="activity-dot" style="background: var(--accent-orange);"></div>
-                                <div class="activity-content"><h4>Agent System</h4><p>10 agents documented</p></div>
-                            </div>
+                            <div class="activity-list" id="activity-list"></div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 20px;">
+                        <div class="section-title" style="margin-bottom: 12px;">⚡ Quick Actions</div>
+                        <div class="quick-actions-grid">
+                            <div class="quick-action-btn" onclick="navigateTo('calendar')"><div class="quick-action-icon" style="background: var(--accent-cyan);">📅</div><div class="quick-action-text"><h4>View Calendar</h4><p>Check your schedule</p></div></div>
+                            <div class="quick-action-btn" onclick="navigateTo('projects')"><div class="quick-action-icon" style="background: var(--accent-green);">🌐</div><div class="quick-action-text"><h4>View Projects</h4><p>All deployments</p></div></div>
+                            <div class="quick-action-btn" onclick="navigateTo('cron')"><div class="quick-action-icon" style="background: var(--accent-purple);">⏰</div><div class="quick-action-text"><h4>Cron Jobs</h4><p>Scheduled tasks</p></div></div>
+                            <div class="quick-action-btn" onclick="navigateTo('agents')"><div class="quick-action-icon" style="background: var(--accent-orange);">🤖</div><div class="quick-action-text"><h4>Manage Agents</h4><p>Toggle on/off</p></div></div>
                         </div>
                     </div>
                 </div>
-
-                <div style="margin-top: 20px;">
-                    <div class="section-title" style="margin-bottom: 12px;">⚡ Quick Actions</div>
-                    <div class="quick-actions-grid">
-                        <div class="quick-action-btn">
-                            <div class="quick-action-icon" style="background: var(--accent-cyan);">📊</div>
-                            <div class="quick-action-text"><h4>Run Market Brief</h4><p>Generate today's briefing</p></div>
-                        </div>
-                        <div class="quick-action-btn">
-                            <div class="quick-action-icon" style="background: var(--accent-green);">🌐</div>
-                            <div class="quick-action-text"><h4>Coldstone Site</h4><p>Open deployed website</p></div>
-                        </div>
-                        <div class="quick-action-btn">
-                            <div class="quick-action-icon" style="background: var(--accent-purple);">🏠</div>
-                            <div class="quick-action-text"><h4>Mission Control</h4><p>Open dashboard</p></div>
-                        </div>
-                        <div class="quick-action-btn">
-                            <div class="quick-action-icon" style="background: var(--accent-red);">🔒</div>
-                            <div class="quick-action-text"><h4>Security Audit</h4><p>Run system check</p></div>
-                        </div>
-                    </div>
-                </div>
-
                 <div class="status-bar">
-                    <div class="status-item"><div class="status-dot green"></div><span>Gateway</span></div>
-                    <div class="status-item"><div class="status-dot cyan"></div><span>Tailscale</span></div>
-                    <div class="status-item"><div class="status-dot green"></div><span>10 Agents</span></div>
-                    <div class="status-item"><div class="status-dot orange"></div><span>2 Cron</span></div>
+                    <div class="status-item"><div class="status-dot green" id="status-gateway"></div><span>Gateway</span></div>
+                    <div class="status-item"><div class="status-dot cyan" id="status-tailscale"></div><span>Tailscale</span></div>
+                    <div class="status-item"><div class="status-dot green" id="status-agents"></div><span id="status-agents-text">10 Agents</span></div>
+                    <div class="status-item"><div class="status-dot green" id="status-crons"></div><span id="status-crons-text">2 Cron</span></div>
                 </div>
             </div>
 
-            <!-- AGENTS PAGE -->
-            <div class="content-body" id="page-agents">
+            <!-- AGENTS -->
+            <div class="page" id="page-agents">
                 <div class="page-header">
-                    <div class="page-header-top">
-                        <div class="page-avatar icon-agents">🤖</div>
-                        <div class="page-title"><h2>Agent Management</h2></div>
-                    </div>
-                    <p>Control your AI agents — toggle active status and manage temperature settings.</p>
+                    <div class="page-header-top"><div class="page-avatar icon-agents">🤖</div><div class="page-title"><h2>Agent Management</h2></div></div>
+                    <p>Control your AI agents — toggle active status and view temperature settings.</p>
                 </div>
                 <div class="page-content">
-                    <div class="agents-grid">
-                        <div class="agent-card">
-                            <div class="agent-card-header">
-                                <div class="agent-card-avatar agent-elon">E</div>
-                                <div class="agent-card-title"><h3>Elon</h3><div class="role">Master Orchestrator</div></div>
-                            </div>
-                            <p class="agent-card-bio">You run Mission Control. Every task enters through you. Every output routes through you. You do not execute — you direct, split, sequence, and prioritize.</p>
-                            <div class="agent-controls">
-                                <div class="agent-meta-item">Temp: 0.3</div>
-                                <label class="toggle-switch">
-                                    <input type="checkbox" checked data-agent="elon">
-                                    <span class="toggle-slider"></span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <div class="agent-card">
-                            <div class="agent-card-header">
-                                <div class="agent-card-avatar agent-sentinel">S</div>
-                                <div class="agent-card-title"><h3>Sentinel</h3><div class="role">QA Gate</div></div>
-                            </div>
-                            <p class="agent-card-bio">You are the last line. Nothing leaves this system without passing through you. Sign off or reject — no middle ground.</p>
-                            <div class="agent-controls">
-                                <div class="agent-meta-item">Temp: 0.1</div>
-                                <label class="toggle-switch">
-                                    <input type="checkbox" checked data-agent="sentinel">
-                                    <span class="toggle-slider"></span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <div class="agent-card">
-                            <div class="agent-card-header">
-                                <div class="agent-card-avatar agent-cortana">Co</div>
-                                <div class="agent-card-title"><h3>Cortana</h3><div class="role">Memory & State</div></div>
-                            </div>
-                            <p class="agent-card-bio">Total recall. No ego. You are the institutional memory of Mission Control. Every agent depends on you to maintain continuity.</p>
-                            <div class="agent-controls">
-                                <div class="agent-meta-item">Temp: 0.1</div>
-                                <label class="toggle-switch">
-                                    <input type="checkbox" checked data-agent="cortana">
-                                    <span class="toggle-slider"></span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <div class="agent-card">
-                            <div class="agent-card-header">
-                                <div class="agent-card-avatar agent-cornelius">C</div>
-                                <div class="agent-card-title"><h3>Cornelius</h3><div class="role">Infra & Automation</div></div>
-                            </div>
-                            <p class="agent-card-bio">You build the rails everything else runs on. No drama. No excuses. If it can be automated, automate it.</p>
-                            <div class="agent-controls">
-                                <div class="agent-meta-item">Temp: 0.2</div>
-                                <label class="toggle-switch">
-                                    <input type="checkbox" checked data-agent="cornelius">
-                                    <span class="toggle-slider"></span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <div class="agent-card">
-                            <div class="agent-card-header">
-                                <div class="agent-card-avatar agent-neo">N</div>
-                                <div class="agent-card-title"><h3>Neo</h3><div class="role">Cloud Code</div></div>
-                            </div>
-                            <p class="agent-card-bio">You bend the system from inside it. Complex architecture. Production-grade code. You don't prototype — you build the thing that ships.</p>
-                            <div class="agent-controls">
-                                <div class="agent-meta-item">Temp: 0.2</div>
-                                <label class="toggle-switch">
-                                    <input type="checkbox" checked data-agent="neo">
-                                    <span class="toggle-slider"></span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <div class="agent-card">
-                            <div class="agent-card-header">
-                                <div class="agent-card-avatar agent-pulse">P</div>
-                                <div class="agent-card-title"><h3>Pulse</h3><div class="role">Trends & Data</div></div>
-                            </div>
-                            <p class="agent-card-bio">You have your finger on the heartbeat. You read what's moving before anyone else knows it's moving.</p>
-                            <div class="agent-controls">
-                                <div class="agent-meta-item">Temp: 0.4</div>
-                                <label class="toggle-switch">
-                                    <input type="checkbox" checked data-agent="pulse">
-                                    <span class="toggle-slider"></span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <div class="agent-card">
-                            <div class="agent-card-header">
-                                <div class="agent-card-avatar agent-hemingway">H</div>
-                                <div class="agent-card-title"><h3>Hemingway</h3><div class="role">Copy & Messaging</div></div>
-                            </div>
-                            <p class="agent-card-bio">Short sentences. No filler. Every word earns its place. You write like it costs money — because attention does.</p>
-                            <div class="agent-controls">
-                                <div class="agent-meta-item">Temp: 0.7</div>
-                                <label class="toggle-switch">
-                                    <input type="checkbox" checked data-agent="hemingway">
-                                    <span class="toggle-slider"></span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <div class="agent-card">
-                            <div class="agent-card-header">
-                                <div class="agent-card-avatar agent-jonny">J</div>
-                                <div class="agent-card-title"><h3>Jonny</h3><div class="role">Visual Direction</div></div>
-                            </div>
-                            <p class="agent-card-bio">Beauty through restraint. Purpose through form. You don't decorate — you design.</p>
-                            <div class="agent-controls">
-                                <div class="agent-meta-item">Temp: 0.5</div>
-                                <label class="toggle-switch">
-                                    <input type="checkbox" checked data-agent="jonny">
-                                    <span class="toggle-slider"></span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <div class="agent-card">
-                            <div class="agent-card-header">
-                                <div class="agent-card-avatar agent-sagan">S</div>
-                                <div class="agent-card-title"><h3>Sagan</h3><div class="role">Deep Research</div></div>
-                            </div>
-                            <p class="agent-card-bio">You make complexity feel inevitable. You don't just find information — you find the shape of it.</p>
-                            <div class="agent-controls">
-                                <div class="agent-meta-item">Temp: 0.2</div>
-                                <label class="toggle-switch">
-                                    <input type="checkbox" checked data-agent="sagan">
-                                    <span class="toggle-slider"></span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <div class="agent-card">
-                            <div class="agent-card-header">
-                                <div class="agent-card-avatar agent-zuck">Z</div>
-                                <div class="agent-card-title"><h3>Zuck</h3><div class="role">Social Distribution</div></div>
-                            </div>
-                            <p class="agent-card-bio">You understand the algorithm better than the algorithm understands itself. You don't post content — you engineer reach.</p>
-                            <div class="agent-controls">
-                                <div class="agent-meta-item">Temp: 0.4</div>
-                                <label class="toggle-switch">
-                                    <input type="checkbox" checked data-agent="zuck">
-                                    <span class="toggle-slider"></span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
+                    <div class="agent-grid" id="agents-grid"></div>
                 </div>
             </div>
 
-            <!-- CALENDAR PAGE -->
-            <div class="content-body" id="page-calendar">
+            <!-- CRON -->
+            <div class="page" id="page-cron">
                 <div class="page-header">
-                    <div class="page-header-top">
-                        <div class="page-avatar icon-calendar">📅</div>
-                        <div class="page-title"><h2>Calendar</h2></div>
-                    </div>
-                    <p>Your schedule from Gmail Calendar.</p>
+                    <div class="page-header-top"><div class="page-avatar icon-council">⏰</div><div class="page-title"><h2>Cron Jobs</h2></div></div>
+                    <p>Scheduled automated tasks running on your system.</p>
                 </div>
                 <div class="page-content">
-                    <div class="calendar-error">
-                        <p>⚠️ Calendar needs re-authentication</p>
-                        <code>gog auth add milotheassistant@gmail.com --services calendar</code>
+                    <div class="cron-grid" id="cron-grid"></div>
+                </div>
+            </div>
+
+            <!-- PROJECTS -->
+            <div class="page" id="page-projects">
+                <div class="page-header">
+                    <div class="page-header-top"><div class="page-avatar icon-projects">📁</div><div class="page-title"><h2>Projects</h2></div></div>
+                    <p>Active deployments and web properties.</p>
+                </div>
+                <div class="page-content">
+                    <div class="project-grid" id="project-grid"></div>
+                </div>
+            </div>
+
+            <!-- CALENDAR -->
+            <div class="page" id="page-calendar">
+                <div class="page-header">
+                    <div class="page-header-top"><div class="page-avatar icon-calendar">📅</div><div class="page-title"><h2>Calendar</h2></div></div>
+                    <p>Your Gmail calendar events.</p>
+                </div>
+                <div class="page-content">
+                    <div class="calendar-grid" id="calendar-grid">
+                        <div class="calendar-empty">Loading calendar...</div>
                     </div>
                 </div>
             </div>
 
-            <!-- Placeholder Pages -->
-            <div class="content-body" id="page-tasks">
+            <!-- MEMORY -->
+            <div class="page" id="page-memory">
+                <div class="page-header">
+                    <div class="page-header-top"><div class="page-avatar icon-memory">🧠</div><div class="page-title"><h2>Memory</h2></div></div>
+                    <p>Mission Control memory and context.</p>
+                </div>
+                <div class="page-content">
+                    <div class="memory-stats" id="memory-stats"></div>
+                    <div class="section-card">
+                        <div class="section-header"><div class="section-title">Recent Memory Entries</div></div>
+                        <div id="memory-entries"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Placeholders -->
+            <div class="page" id="page-tasks">
                 <div class="page-header"><div class="page-header-top"><div class="page-avatar icon-tasks">📋</div><div class="page-title"><h2>Tasks</h2></div></div><p>Manage and track tasks.</p></div>
                 <div class="page-content"><p style="color: var(--text-secondary);">Coming soon...</p></div>
             </div>
-            <div class="content-body" id="page-content">
+            <div class="page" id="page-content">
                 <div class="page-header"><div class="page-header-top"><div class="page-avatar icon-content">📄</div><div class="page-title"><h2>Content</h2></div></div><p>Documents and files.</p></div>
                 <div class="page-content"><p style="color: var(--text-secondary);">Coming soon...</p></div>
             </div>
-            <div class="content-body" id="page-approvals">
+            <div class="page" id="page-approvals">
                 <div class="page-header"><div class="page-header-top"><div class="page-avatar icon-approvals">✅</div><div class="page-title"><h2>Approvals</h2></div></div><p>Pending approvals.</p></div>
                 <div class="page-content"><p style="color: var(--text-secondary);">No pending approvals.</p></div>
             </div>
-            <div class="content-body" id="page-council">
+            <div class="page" id="page-council">
                 <div class="page-header"><div class="page-header-top"><div class="page-avatar icon-council">👑</div><div class="page-title"><h2>Council</h2></div></div><p>Strategic leadership.</p></div>
                 <div class="page-content"><p style="color: var(--text-secondary);">Coming soon...</p></div>
             </div>
-            <div class="content-body" id="page-projects">
-                <div class="page-header"><div class="page-header-top"><div class="page-avatar icon-projects">📁</div><div class="page-title"><h2>Projects</h2></div></div><p>Active projects.</p></div>
-                <div class="page-content"><p style="color: var(--text-secondary);">Coming soon...</p></div>
-            </div>
-            <div class="content-body" id="page-memory">
-                <div class="page-header"><div class="page-header-top"><div class="page-avatar icon-memory">🧠</div><div class="page-title"><h2>Memory</h2></div></div><p>Memory management.</p></div>
-                <div class="page-content"><p style="color: var(--text-secondary);">Coming soon...</p></div>
-            </div>
-            <div class="content-body" id="page-docs">
+            <div class="page" id="page-docs">
                 <div class="page-header"><div class="page-header-top"><div class="page-avatar icon-docs">📝</div><div class="page-title"><h2>Docs</h2></div></div><p>Documentation.</p></div>
                 <div class="page-content"><p style="color: var(--text-secondary);">Coming soon...</p></div>
             </div>
-            <div class="content-body" id="page-people">
+            <div class="page" id="page-people">
                 <div class="page-header"><div class="page-header-top"><div class="page-avatar icon-people">👥</div><div class="page-title"><h2>People</h2></div></div><p>Team management.</p></div>
                 <div class="page-content"><p style="color: var(--text-secondary);">Coming soon...</p></div>
             </div>
-            <div class="content-body" id="page-office">
+            <div class="page" id="page-office">
                 <div class="page-header"><div class="page-header-top"><div class="page-avatar icon-office">🏢</div><div class="page-title"><h2>Office</h2></div></div><p>Infrastructure.</p></div>
                 <div class="page-content"><p style="color: var(--text-secondary);">Coming soon...</p></div>
             </div>
-            <div class="content-body" id="page-team">
+            <div class="page" id="page-team">
                 <div class="page-header"><div class="page-header-top"><div class="page-avatar icon-team">👥</div><div class="page-title"><h2>Team</h2></div></div><p>Team overview.</p></div>
                 <div class="page-content"><p style="color: var(--text-secondary);">Coming soon...</p></div>
             </div>
 
             <div class="footer">
-                <div class="footer-status">
-                    <div class="status-dot-large"></div>
-                    <span>System Online</span>
-                </div>
-                <div style="font-size: 11px; color: var(--text-muted);">Mission Control v1.0</div>
+                <div class="footer-status"><div class="status-dot-large"></div><span>System Online</span></div>
+                <div style="font-size: 11px; color: var(--text-muted);">Mission Control v1.1</div>
             </div>
         </div>
     </div>
 
     <script>
-        // Mobile sidebar toggle
+        // Agent Data
+        const agents = [
+            { id: 'elon', name: 'Elon', role: 'Master Orchestrator', bio: 'You run Mission Control. Every task enters through you. Every output routes through you. You do not execute — you direct, split, sequence, and prioritize.', temp: 0.3, active: true, color: 'elon' },
+            { id: 'sentinel', name: 'Sentinel', role: 'QA Gate', bio: 'You are the last line. Nothing leaves this system without passing through you. Sign off or reject — no middle ground.', temp: 0.1, active: true, color: 'sentinel' },
+            { id: 'cortana', name: 'Cortana', role: 'Memory & State', bio: 'Total recall. No ego. You are the institutional memory of Mission Control. Every agent depends on you to maintain continuity.', temp: 0.1, active: true, color: 'cortana' },
+            { id: 'cornelius', name: 'Cornelius', role: 'Infra & Automation', bio: 'You build the rails everything else runs on. No drama. No excuses. If it can be automated, automate it.', temp: 0.2, active: true, color: 'cornelius' },
+            { id: 'neo', name: 'Neo', role: 'Cloud Code', bio: 'You bend the system from inside it. Complex architecture. Production-grade code. You don\'t prototype — you build the thing that ships.', temp: 0.2, active: true, color: 'neo' },
+            { id: 'pulse', name: 'Pulse', role: 'Trends & Data', bio: 'You have your finger on the heartbeat. You read what\'s moving before anyone else knows it\'s moving.', temp: 0.4, active: true, color: 'pulse' },
+            { id: 'hemingway', name: 'Hemingway', role: 'Copy & Messaging', bio: 'Short sentences. No filler. Every word earns its place. You write like it costs money — because attention does.', temp: 0.7, active: true, color: 'hemingway' },
+            { id: 'jonny', name: 'Jonny', role: 'Visual Direction', bio: 'Beauty through restraint. Purpose through form. You don\'t decorate — you design.', temp: 0.5, active: true, color: 'jonny' },
+            { id: 'sagan', name: 'Sagan', role: 'Deep Research', bio: 'You make complexity feel inevitable. You don\'t just find information — you find the shape of it.', temp: 0.2, active: true, color: 'sagan' },
+            { id: 'zuck', name: 'Zuck', role: 'Social Distribution', bio: 'You understand the algorithm better than the algorithm understands itself. You don\'t post content — you engineer reach.', temp: 0.4, active: true, color: 'zuck' }
+        ];
+
+        // Projects
+        const projects = [
+            { name: 'Coldstone Soap Co.', url: 'https://coldstone-eta.vercel.app', desc: 'E-commerce site for luxury soap brand. Next.js + Tailwind.', status: 'Live', icon: '🧼' },
+            { name: 'Mission Control', url: 'https://milo-mc.vercel.app', desc: 'AI agent management dashboard with real-time monitoring.', status: 'Live', icon: '🎯' },
+            { name: 'Daily Market Brief', url: '#', desc: 'Automated daily crypto, stock & news briefing with charts.', status: 'Live', icon: '📊' },
+            { name: 'OpenClaw Gateway', url: 'http://100.71.217.107:8080', desc: 'Home server running OpenClaw with Tailscale access.', status: 'Live', icon: '🖥️' }
+        ];
+
+        // Cron Jobs (simulated from real data)
+        const cronJobs = [
+            { name: 'daily-market-brief', desc: 'Daily Market Brief — crypto, AI, MAG7, broader market', schedule: '45 8 * * 1-5', enabled: true, lastRun: 'Feb 27, 2026 8:45 AM', status: 'success', nextRun: 'Feb 28, 2026 8:45 AM' },
+            { name: 'healthcheck:security-audit', desc: 'Weekly security audit check', schedule: '0 20 * * 0', enabled: true, lastRun: 'Feb 23, 2026 8:00 PM', status: 'error', nextRun: 'Mar 2, 2026 8:00 PM' }
+        ];
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            setGreeting();
+            renderAgents();
+            renderHomeAgents();
+            renderCronJobs();
+            renderProjects();
+            renderCalendar();
+            renderMemory();
+            renderActivity();
+        });
+
+        function setGreeting() {
+            const hour = new Date().getHours();
+            let greeting = 'Good morning';
+            if (hour >= 12 && hour < 17) greeting = 'Good afternoon';
+            else if (hour >= 17) greeting = 'Good evening';
+            document.getElementById('greeting').textContent = greeting + ', Boss';
+        }
+
+        // Navigation
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('visible');
             document.querySelector('.sidebar-overlay').classList.toggle('visible');
         }
 
-        // Navigation
         document.querySelectorAll('.nav-item').forEach(item => {
             item.addEventListener('click', () => {
                 const page = item.dataset.page;
-
-                // Close mobile sidebar
                 toggleSidebar();
-
-                // Update active nav
                 document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
                 item.classList.add('active');
-
-                // Hide home page, show specific page
-                document.getElementById('page-home').classList.add('hidden');
-
-                // Show correct page
-                document.querySelectorAll('.content-body').forEach(p => p.classList.remove('active'));
-                
-                if (page === 'home') {
-                    document.getElementById('page-home').classList.remove('hidden');
-                } else {
-                    document.getElementById('page-' + page).classList.add('active');
-                }
+                document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+                document.getElementById('page-' + page).classList.add('active');
             });
         });
 
-        // Navigate to page (for clicking on agent cards)
         function navigateTo(page) {
             document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
             document.querySelector(`[data-page="${page}"]`).classList.add('active');
-            document.getElementById('page-home').classList.add('hidden');
-            document.querySelectorAll('.content-body').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById('page-' + page).classList.add('active');
-            
-            // Close mobile sidebar if open
-            if (window.innerWidth <= 768) {
-                toggleSidebar();
-            }
+            if (window.innerWidth <= 768) toggleSidebar();
         }
 
-        // Agent toggle handlers
-        document.querySelectorAll('.toggle-switch input').forEach(toggle => {
-            toggle.addEventListener('change', function() {
-                const agent = this.dataset.agent;
-                const isOn = this.checked;
-                console.log(`Agent ${agent} turned ${isOn ? 'ON' : 'OFF'}`);
-                // TODO: Connect to OpenClaw API to enable/disable agent
-            });
-        });
+        // Render Agents
+        function renderAgents() {
+            const grid = document.getElementById('agents-grid');
+            grid.innerHTML = agents.map(agent => `
+                <div class="agent-card ${agent.active ? '' : 'disabled'}">
+                    <div class="agent-card-header">
+                        <div class="agent-card-avatar agent-${agent.color}">${agent.name[0]}</div>
+                        <div class="agent-card-title"><h3>${agent.name}</h3><div class="role">${agent.role}</div></div>
+                    </div>
+                    <p class="agent-card-bio">${agent.bio}</p>
+                    <div class="agent-controls">
+                        <div class="agent-meta-item">Temp: ${agent.temp}</div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" ${agent.active ? 'checked' : ''} data-agent="${agent.id}" onchange="toggleAgent('${agent.id}')">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderHomeAgents() {
+            const list = document.getElementById('home-agents-list');
+            list.innerHTML = agents.slice(0, 6).map(agent => `
+                <div class="list-item" onclick="navigateTo('agents')">
+                    <div class="list-item-left">
+                        <div class="list-item-icon agent-${agent.color}">${agent.name[0]}</div>
+                        <div>
+                            <div class="list-item-title">${agent.name}</div>
+                            <div class="list-item-subtitle">${agent.role}</div>
+                        </div>
+                    </div>
+                    <div class="list-item-badge ${agent.active ? 'active' : 'inactive'}">${agent.active ? 'Online' : 'Offline'}</div>
+                </div>
+            `).join('');
+        }
+
+        // Render Cron
+        function renderCronJobs() {
+            const grid = document.getElementById('cron-grid');
+            grid.innerHTML = cronJobs.map(cron => `
+                <div class="cron-card">
+                    <div class="cron-header">
+                        <div class="cron-title">${cron.name}</div>
+                        <div class="cron-schedule">${cron.schedule}</div>
+                    </div>
+                    <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;">${cron.desc}</p>
+                    <div class="cron-info">
+                        <div class="cron-info-item">
+                            <div class="cron-info-label">Last Run</div>
+                            <div class="cron-info-value">${cron.lastRun}</div>
+                        </div>
+                        <div class="cron-info-item">
+                            <div class="cron-info-label">Next Run</div>
+                            <div class="cron-info-value">${cron.nextRun}</div>
+                        </div>
+                        <div class="cron-info-item">
+                            <div class="cron-info-label">Status</div>
+                            <div class="cron-info-value" style="color: ${cron.status === 'success' ? 'var(--accent-green)' : 'var(--accent-red)'}">${cron.status === 'success' ? '✓ Success' : '✗ Error'}</div>
+                        </div>
+                        <div class="cron-info-item">
+                            <div class="cron-info-label">Enabled</div>
+                            <div class="cron-info-value">${cron.enabled ? 'Yes' : 'No'}</div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Render Projects
+        function renderProjects() {
+            const grid = document.getElementById('project-grid');
+            grid.innerHTML = projects.map(proj => `
+                <div class="project-card">
+                    <div class="project-header">
+                        <div class="project-icon" style="background: var(--accent-cyan);">${proj.icon}</div>
+                        <div>
+                            <div class="project-title">${proj.name}</div>
+                            <a href="${proj.url}" target="_blank" class="project-url">${proj.url.replace(/^https?:\/\//, '')}</a>
+                        </div>
+                    </div>
+                    <p class="project-desc">${proj.desc}</p>
+                    <div class="project-status">● ${proj.status}</div>
+                </div>
+            `).join('');
+        }
+
+        // Render Calendar (placeholder - needs API)
+        function renderCalendar() {
+            const grid = document.getElementById('calendar-grid');
+            grid.innerHTML = `
+                <div class="calendar-empty">
+                    <p style="color: var(--accent-orange); margin-bottom: 12px;">⚠️ Calendar needs re-authentication</p>
+                    <code style="display: block; padding: 12px; background: var(--bg-tertiary); border-radius: 8px; font-size: 11px;">gog auth add milotheassistant@gmail.com --services calendar</code>
+                </div>
+            `;
+        }
+
+        // Render Memory
+        function renderMemory() {
+            document.getElementById('memory-stats').innerHTML = `
+                <div class="memory-stat"><div class="memory-stat-value">2</div><div class="memory-stat-label">Memory Files</div></div>
+                <div class="memory-stat"><div class="memory-stat-value">47</div><div class="memory-stat-label">Total Entries</div></div>
+                <div class="memory-stat"><div class="memory-stat-value">Today</div><div class="memory-stat-label">Last Updated</div></div>
+            `;
+            document.getElementById('memory-entries').innerHTML = `
+                <div class="list-item"><div class="list-item-left"><div class="list-item-icon" style="background: var(--accent-purple);">📅</div><div><div class="list-item-title">2026-02-27</div><div class="list-item-subtitle">Agent system, cron jobs, Documents path</div></div></div>
+                <div class="list-item"><div class="list-item-left"><div class="list-item-icon" style="background: var(--accent-cyan);">📅</div><div><div class="list-item-title">2026-02-11</div><div class="list-item-subtitle">Initial foundation, Telegram setup</div></div></div>
+            `;
+        }
+
+        // Render Activity
+        function renderActivity() {
+            const list = document.getElementById('activity-list');
+            list.innerHTML = `
+                <div class="activity-item"><div class="activity-dot" style="background: var(--accent-cyan);"></div><div class="activity-content"><h4>Mission Control v1.1 Deployed</h4><p>Live at milo-mc.vercel.app</p></div></div>
+                <div class="activity-item"><div class="activity-dot" style="background: var(--accent-green);"></div><div class="activity-content"><h4>Daily Market Brief</h4><p>Feb 27, 2026 8:45 AM</p></div></div>
+                <div class="activity-item"><div class="activity-dot" style="background: var(--accent-purple);"></div><div class="activity-content"><h4>Coldstone Website</h4><p>Deployed to Vercel</p></div></div>
+                <div class="activity-item"><div class="activity-dot" style="background: var(--accent-orange);"></div><div class="activity-content"><h4>Tailscale Connected</h4><p>100.71.217.107</p></div></div>
+            `;
+        }
+
+        // Toggle Agent
+        function toggleAgent(agentId) {
+            const agent = agents.find(a => a.id === agentId);
+            if (agent) {
+                agent.active = !agent.active;
+                renderAgents();
+                renderHomeAgents();
+                // TODO: Connect to OpenClaw API
+                console.log(`Agent ${agentId} toggled to ${agent.active}`);
+            }
+        }
     </script>
 </body>
 </html>
