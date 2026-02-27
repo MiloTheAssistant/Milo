@@ -105,7 +105,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 16px;
+            font-size: 14px;
             flex-shrink: 0;
             background: var(--bg-tertiary);
         }
@@ -161,7 +161,6 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 700;
             font-size: 20px;
         }
 
@@ -265,11 +264,6 @@
             color: var(--accent-green);
         }
 
-        .status-inactive {
-            background: rgba(136, 136, 160, 0.15);
-            color: var(--text-muted);
-        }
-
         .status-dot {
             width: 6px;
             height: 6px;
@@ -322,28 +316,19 @@
             grid-column: 1 / -1;
         }
 
-        /* Agent Colors */
-        .elon { background: linear-gradient(135deg, #00d4ff, #0099cc); color: #000; }
-        .cornelius { background: linear-gradient(135deg, #5f9ea0, #2e8b84); }
-        .neo { background: linear-gradient(135deg, #74b9ff, #0984e3); }
-        .sagan { background: linear-gradient(135deg, #a29bfe, #6c5ce7); }
-        .pulse { background: linear-gradient(135deg, #fd79a8, #e84393); }
-        .hemingway { background: linear-gradient(135deg, #fdcb6e, #f39c12); color: #000; }
-        .jonny { background: linear-gradient(135deg, #ff9f43, #e17055); }
-        .zuck { background: linear-gradient(135deg, #4ecdc4, #22a6b3); }
-        .sentinel { background: linear-gradient(135deg, #ff6b6b, #ee5a5a); }
-        .cortana { background: linear-gradient(135deg, #9b59b6, #8e44ad); }
-
         /* Icon Colors */
-        .icon-mission { background: var(--accent-cyan); color: #000; }
-        .icon-quick { background: var(--accent-orange); color: #000; }
-        .icon-credentials { background: var(--accent-red); }
-        .icon-tools { background: var(--accent-blue); }
-        .icon-automation { background: var(--accent-purple); }
-        .icon-models { background: var(--accent-green); }
-        .icon-knowledge { background: var(--accent-gold); color: #000; }
+        .icon-tasks { background: var(--accent-cyan); color: #000; }
+        .icon-agents { background: var(--accent-purple); }
+        .icon-content { background: var(--accent-blue); }
+        .icon-approvals { background: var(--accent-green); }
+        .icon-council { background: var(--accent-gold); color: #000; }
+        .icon-calendar { background: var(--accent-orange); }
+        .icon-projects { background: var(--accent-blue); }
         .icon-memory { background: var(--accent-pink); }
-        .icon-settings { background: var(--text-muted); }
+        .icon-docs { background: var(--accent-gold); color: #000; }
+        .icon-people { background: var(--accent-red); }
+        .icon-office { background: var(--text-muted); }
+        .icon-team { background: var(--accent-cyan); color: #000; }
 
         /* Footer */
         .footer {
@@ -363,7 +348,7 @@
             color: var(--text-secondary);
         }
 
-        .status-dot {
+        .status-dot-large {
             width: 8px;
             height: 8px;
             border-radius: 50%;
@@ -390,7 +375,7 @@
             border-radius: 3px;
         }
 
-        /* Quick Actions Specific */
+        /* Action Items */
         .action-item {
             display: flex;
             align-items: center;
@@ -431,7 +416,7 @@
             border-color: var(--accent-cyan);
         }
 
-        /* Credentials List */
+        /* Credential Item */
         .credential-item {
             display: flex;
             align-items: center;
@@ -480,41 +465,42 @@
                 <span>Agent System</span>
             </div>
 
-            <div class="nav-item active" data-page="mission-control">
-                <div class="nav-icon">🏠</div>
-                <span class="nav-label">Mission Control</span>
+            <!-- Main Navigation -->
+            <div class="nav-item active" data-page="tasks">
+                <div class="nav-icon">📋</div>
+                <span class="nav-label">Tasks</span>
             </div>
 
-            <div class="nav-section-title">System</div>
-
-            <div class="nav-item" data-page="quick-actions">
-                <div class="nav-icon">⚡</div>
-                <span class="nav-label">Quick Actions</span>
-            </div>
-
-            <div class="nav-item" data-page="credentials">
-                <div class="nav-icon">🔐</div>
-                <span class="nav-label">Credentials</span>
-            </div>
-
-            <div class="nav-item" data-page="tools">
-                <div class="nav-icon">🛠️</div>
-                <span class="nav-label">Tools</span>
-            </div>
-
-            <div class="nav-item" data-page="automation">
-                <div class="nav-icon">⚙️</div>
-                <span class="nav-label">Automation</span>
-            </div>
-
-            <div class="nav-item" data-page="models">
+            <div class="nav-item" data-page="agents">
                 <div class="nav-icon">🤖</div>
-                <span class="nav-label">Models</span>
+                <span class="nav-label">Agents</span>
             </div>
 
-            <div class="nav-item" data-page="knowledge">
-                <div class="nav-icon">📚</div>
-                <span class="nav-label">Knowledge</span>
+            <div class="nav-item" data-page="content">
+                <div class="nav-icon">📄</div>
+                <span class="nav-label">Content</span>
+            </div>
+
+            <div class="nav-item" data-page="approvals">
+                <div class="nav-icon">✅</div>
+                <span class="nav-label">Approvals</span>
+            </div>
+
+            <div class="nav-section-title">Organization</div>
+
+            <div class="nav-item" data-page="council">
+                <div class="nav-icon">👑</div>
+                <span class="nav-label">Council</span>
+            </div>
+
+            <div class="nav-item" data-page="calendar">
+                <div class="nav-icon">📅</div>
+                <span class="nav-label">Calendar</span>
+            </div>
+
+            <div class="nav-item" data-page="projects">
+                <div class="nav-icon">📁</div>
+                <span class="nav-label">Projects</span>
             </div>
 
             <div class="nav-item" data-page="memory">
@@ -522,413 +508,296 @@
                 <span class="nav-label">Memory</span>
             </div>
 
-            <div class="nav-item" data-page="settings">
-                <div class="nav-icon">⚙️</div>
-                <span class="nav-label">Settings</span>
+            <div class="nav-item" data-page="docs">
+                <div class="nav-icon">📝</div>
+                <span class="nav-label">Docs</span>
+            </div>
+
+            <div class="nav-section-title">Team</div>
+
+            <div class="nav-item" data-page="people">
+                <div class="nav-icon">👥</div>
+                <span class="nav-label">People</span>
+            </div>
+
+            <div class="nav-item" data-page="office">
+                <div class="nav-icon">🏢</div>
+                <span class="nav-label">Office</span>
+            </div>
+
+            <div class="nav-item" data-page="team">
+                <div class="nav-icon">👥</div>
+                <span class="nav-label">Team</span>
             </div>
         </div>
 
         <!-- Main Content -->
         <div class="main-content">
-            <!-- Mission Control Page -->
-            <div class="content-body active" id="page-mission-control">
+            <!-- Tasks Page -->
+            <div class="content-body active" id="page-tasks">
                 <div class="content-header">
                     <div class="content-header-top">
-                        <div class="content-avatar elon">E</div>
+                        <div class="content-avatar icon-tasks">📋</div>
                         <div class="content-title">
-                            <h2>Elon</h2>
-                            <span class="temp-badge">Temperature: 0.3</span>
+                            <h2>Tasks</h2>
                         </div>
                     </div>
-                    <p>You run Mission Control. Every task enters through you. Every output routes through you. You do not execute — you direct, split, sequence, and prioritize.</p>
-                </div>
-                <div class="content-body" style="display: block; padding: 28px 36px;">
-                    <div class="page-grid">
-                        <div class="page-card">
-                            <div class="page-card-header">
-                                <div class="page-card-icon cornelius">C</div>
-                                <h3>Cornelius</h3>
-                            </div>
-                            <p>Infra & Automation — Local code and shell scripts</p>
-                            <span class="page-card-status status-active"><span class="status-dot"></span>Active</span>
-                        </div>
-                        <div class="page-card">
-                            <div class="page-card-header">
-                                <div class="page-card-icon pulse">P</div>
-                                <h3>Pulse</h3>
-                            </div>
-                            <p>Trends & Data — Market signals and real-time data</p>
-                            <span class="page-card-status status-active"><span class="status-dot"></span>Active</span>
-                        </div>
-                        <div class="page-card">
-                            <div class="page-card-header">
-                                <div class="page-card-icon hemingway">H</div>
-                                <h3>Hemingway</h3>
-                            </div>
-                            <p>Copy & Messaging — Writing and voice</p>
-                            <span class="page-card-status status-active"><span class="status-dot"></span>Active</span>
-                        </div>
-                        <div class="page-card">
-                            <div class="page-card-header">
-                                <div class="page-card-icon neo">N</div>
-                                <h3>Neo</h3>
-                            </div>
-                            <p>Cloud Code — Complex production builds</p>
-                            <span class="page-card-status status-active"><span class="status-dot"></span>Active</span>
-                        </div>
-                        <div class="page-card">
-                            <div class="page-card-header">
-                                <div class="page-card-icon sagan">S</div>
-                                <h3>Sagan</h3>
-                            </div>
-                            <p>Deep Research — Analysis and synthesis</p>
-                            <span class="page-card-status status-active"><span class="status-dot"></span>Active</span>
-                        </div>
-                        <div class="page-card">
-                            <div class="page-card-header">
-                                <div class="page-card-icon jonny">J</div>
-                                <h3>Jonny</h3>
-                            </div>
-                            <p>Visual Direction — Creative briefs</p>
-                            <span class="page-card-status status-active"><span class="status-dot"></span>Active</span>
-                        </div>
-                        <div class="page-card">
-                            <div class="page-card-header">
-                                <div class="page-card-icon zuck">Z</div>
-                                <h3>Zuck</h3>
-                            </div>
-                            <p>Social Distribution — Posts and engagement</p>
-                            <span class="page-card-status status-active"><span class="status-dot"></span>Active</span>
-                        </div>
-                        <div class="page-card">
-                            <div class="page-card-header">
-                                <div class="page-card-icon sentinel">S</div>
-                                <h3>Sentinel</h3>
-                            </div>
-                            <p>QA Gate — Final sign-off before anything ships</p>
-                            <span class="page-card-status status-active"><span class="status-dot"></span>Active</span>
-                        </div>
-                        <div class="page-card">
-                            <div class="page-card-header">
-                                <div class="page-card-icon cortana">Co</div>
-                                <h3>Cortana</h3>
-                            </div>
-                            <p>Memory & State — Task logs and context</p>
-                            <span class="page-card-status status-active"><span class="status-dot"></span>Active</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Quick Actions Page -->
-            <div class="content-body" id="page-quick-actions">
-                <div class="content-header">
-                    <div class="content-header-top">
-                        <div class="content-avatar" style="background: var(--accent-orange);">⚡</div>
-                        <div class="content-title">
-                            <h2>Quick Actions</h2>
-                        </div>
-                    </div>
-                    <p>Dashboard of recent and favorite actions across the system.</p>
+                    <p>Manage and track tasks across the agent system.</p>
                 </div>
                 <div class="content-body" style="display: block; padding: 28px 36px;">
                     <div class="action-item">
                         <div class="action-info">
                             <h4>Daily Market Brief</h4>
-                            <p>Cron: Weekdays 8:45 AM CST • Next: Feb 27, 2026 8:45 AM</p>
+                            <p>Next run: Feb 27, 2026 8:45 AM CST</p>
                         </div>
                         <button class="action-btn">Run Now</button>
-                    </div>
-                    <div class="action-item">
-                        <div class="action-info">
-                            <h4>Coldstone Website</h4>
-                            <p>Deployed to Vercel • coldstone-eta.vercel.app</p>
-                        </div>
-                        <button class="action-btn">Open</button>
-                    </div>
-                    <div class="action-item">
-                        <div class="action-info">
-                            <h4>Mission Control</h4>
-                            <p>Deployed to Vercel • milo-mc.vercel.app</p>
-                        </div>
-                        <button class="action-btn">Open</button>
                     </div>
                     <div class="action-item">
                         <div class="action-info">
                             <h4>Security Audit</h4>
-                            <p>Cron: Sundays 8:00 PM CST</p>
+                            <p>Next run: March 1, 2026 8:00 PM CST</p>
                         </div>
                         <button class="action-btn">Run Now</button>
                     </div>
                 </div>
             </div>
 
-            <!-- Credentials Page -->
-            <div class="content-body" id="page-credentials">
+            <!-- Agents Page -->
+            <div class="content-body" id="page-agents">
                 <div class="content-header">
                     <div class="content-header-top">
-                        <div class="content-avatar" style="background: var(--accent-red);">🔐</div>
+                        <div class="content-avatar icon-agents">🤖</div>
                         <div class="content-title">
-                            <h2>Credentials</h2>
+                            <h2>Agents</h2>
                         </div>
                     </div>
-                    <p>API keys, tokens, and secrets for external services.</p>
-                </div>
-                <div class="content-body" style="display: block; padding: 28px 36px;">
-                    <div class="credential-item">
-                        <div class="credential-info">
-                            <div class="credential-icon">📊</div>
-                            <div>
-                                <div class="credential-name">CoinGecko API</div>
-                                <div class="credential-status">Crypto price data</div>
-                            </div>
-                        </div>
-                        <span class="page-card-status status-active"><span class="status-dot"></span>Connected</span>
-                    </div>
-                    <div class="credential-item">
-                        <div class="credential-info">
-                            <div class="credential-icon">📈</div>
-                            <div>
-                                <div class="credential-name">Yahoo Finance</div>
-                                <div class="credential-status">Stock market data</div>
-                            </div>
-                        </div>
-                        <span class="page-card-status status-active"><span class="status-dot"></span>Connected</span>
-                    </div>
-                    <div class="credential-item">
-                        <div class="credential-info">
-                            <div class="credential-icon">📰</div>
-                            <div>
-                                <div class="credential-name">Bloomberg RSS</div>
-                                <div class="credential-status">Market news feed</div>
-                            </div>
-                        </div>
-                        <span class="page-card-status status-active"><span class="status-dot"></span>Connected</span>
-                    </div>
-                    <div class="credential-item">
-                        <div class="credential-info">
-                            <div class="credential-icon">🤖</div>
-                            <div>
-                                <div class="credential-name">Telegram Bot</div>
-                                <div class="credential-status">Notifications & commands</div>
-                            </div>
-                        </div>
-                        <span class="page-card-status status-active"><span class="status-dot"></span>Connected</span>
-                    </div>
-                    <div class="credential-item">
-                        <div class="credential-info">
-                            <div class="credential-icon">☁️</div>
-                            <div>
-                                <div class="credential-name">Vercel</div>
-                                <div class="credential-status">Website deployments</div>
-                            </div>
-                        </div>
-                        <span class="page-card-status status-active"><span class="status-dot"></span>Connected</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Tools Page -->
-            <div class="content-body" id="page-tools">
-                <div class="content-header">
-                    <div class="content-header-top">
-                        <div class="content-avatar" style="background: var(--accent-blue);">🛠️</div>
-                        <div class="content-title">
-                            <h2>Tools</h2>
-                        </div>
-                    </div>
-                    <p>Available tools and skills for the agent system.</p>
+                    <p>Your AI agent workforce — each with a specific role and temperature setting.</p>
                 </div>
                 <div class="content-body" style="display: block; padding: 28px 36px;">
                     <div class="page-grid">
                         <div class="page-card">
                             <div class="page-card-header">
-                                <div class="page-card-icon" style="background: var(--accent-green);">📝</div>
-                                <h3>apple-notes</h3>
+                                <div class="page-card-icon icon-council" style="background: var(--accent-cyan);">E</div>
+                                <h3>Elon</h3>
                             </div>
-                            <p>Manage Apple Notes via memo CLI</p>
+                            <p>Master Orchestrator — routes tasks to agents</p>
+                            <span class="page-card-status status-active"><span class="status-dot"></span>Temp: 0.3</span>
                         </div>
                         <div class="page-card">
                             <div class="page-card-header">
-                                <div class="page-card-icon" style="background: var(--accent-orange);">⏰</div>
-                                <h3>apple-reminders</h3>
+                                <div class="page-card-icon icon-agents">C</div>
+                                <h3>Cornelius</h3>
                             </div>
-                            <p>Manage Apple Reminders via remindctl</p>
+                            <p>Infra & Automation</p>
+                            <span class="page-card-status status-active"><span class="status-dot"></span>Temp: 0.2</span>
                         </div>
                         <div class="page-card">
                             <div class="page-card-header">
-                                <div class="page-card-icon" style="background: var(--accent-purple);">📡</div>
-                                <h3>blogwatcher</h3>
+                                <div class="page-card-icon icon-agents">N</div>
+                                <h3>Neo</h3>
                             </div>
-                            <p>Monitor blogs and RSS feeds</p>
+                            <p>Cloud Code</p>
+                            <span class="page-card-status status-active"><span class="status-dot"></span>Temp: 0.2</span>
                         </div>
                         <div class="page-card">
                             <div class="page-card-header">
-                                <div class="page-card-icon" style="background: var(--accent-cyan);">📷</div>
-                                <h3>camsnap</h3>
+                                <div class="page-card-icon icon-agents">S</div>
+                                <h3>Sagan</h3>
                             </div>
-                            <p>Capture frames from RTSP/ONVIF cameras</p>
+                            <p>Deep Research</p>
+                            <span class="page-card-status status-active"><span class="status-dot"></span>Temp: 0.2</span>
                         </div>
                         <div class="page-card">
                             <div class="page-card-header">
-                                <div class="page-card-icon" style="background: var(--accent-pink);">🐙</div>
-                                <h3>github</h3>
+                                <div class="page-card-icon icon-agents">P</div>
+                                <h3>Pulse</h3>
                             </div>
-                            <p>Interact with GitHub via gh CLI</p>
+                            <p>Trends & Data</p>
+                            <span class="page-card-status status-active"><span class="status-dot"></span>Temp: 0.4</span>
                         </div>
                         <div class="page-card">
                             <div class="page-card-header">
-                                <div class="page-card-icon" style="background: var(--accent-blue);">📧</div>
-                                <h3>himalaya</h3>
+                                <div class="page-card-icon icon-agents">H</div>
+                                <h3>Hemingway</h3>
                             </div>
-                            <p>CLI email management via IMAP/SMTP</p>
+                            <p>Copy & Messaging</p>
+                            <span class="page-card-status status-active"><span class="status-dot"></span>Temp: 0.7</span>
                         </div>
                         <div class="page-card">
                             <div class="page-card-header">
-                                <div class="page-card-icon" style="background: var(--accent-green);">💬</div>
-                                <h3>imsg</h3>
+                                <div class="page-card-icon icon-agents">J</div>
+                                <h3>Jonny</h3>
                             </div>
-                            <p>iMessage/SMS CLI for listing and sending</p>
+                            <p>Visual Direction</p>
+                            <span class="page-card-status status-active"><span class="status-dot"></span>Temp: 0.5</span>
                         </div>
                         <div class="page-card">
                             <div class="page-card-header">
-                                <div class="page-card-icon" style="background: var(--accent-gold);">🎵</div>
-                                <h3>sonoscli</h3>
+                                <div class="page-card-icon icon-agents">Z</div>
+                                <h3>Zuck</h3>
                             </div>
-                            <p>Control Sonos speakers</p>
+                            <p>Social Distribution</p>
+                            <span class="page-card-status status-active"><span class="status-dot"></span>Temp: 0.4</span>
+                        </div>
+                        <div class="page-card">
+                            <div class="page-card-header">
+                                <div class="page-card-icon icon-approvals">S</div>
+                                <h3>Sentinel</h3>
+                            </div>
+                            <p>QA Gate</p>
+                            <span class="page-card-status status-active"><span class="status-dot"></span>Temp: 0.1</span>
+                        </div>
+                        <div class="page-card">
+                            <div class="page-card-header">
+                                <div class="page-card-icon icon-memory">Co</div>
+                                <h3>Cortana</h3>
+                            </div>
+                            <p>Memory & State</p>
+                            <span class="page-card-status status-active"><span class="status-dot"></span>Temp: 0.1</span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Automation Page -->
-            <div class="content-body" id="page-automation">
+            <!-- Content Page -->
+            <div class="content-body" id="page-content">
                 <div class="content-header">
                     <div class="content-header-top">
-                        <div class="content-avatar" style="background: var(--accent-purple);">⚙️</div>
+                        <div class="content-avatar icon-content">📄</div>
                         <div class="content-title">
-                            <h2>Automation</h2>
+                            <h2>Content</h2>
                         </div>
                     </div>
-                    <p>Cron jobs and scheduled tasks.</p>
-                </div>
-                <div class="content-body" style="display: block; padding: 28px 36px;">
-                    <div class="credential-item">
-                        <div class="credential-info">
-                            <div class="credential-icon" style="background: var(--accent-green);">📊</div>
-                            <div>
-                                <div class="credential-name">daily-market-brief</div>
-                                <div class="credential-status">Weekdays 8:45 AM CST</div>
-                            </div>
-                        </div>
-                        <span class="page-card-status status-active"><span class="status-dot"></span>Active</span>
-                    </div>
-                    <div class="credential-item">
-                        <div class="credential-info">
-                            <div class="credential-icon" style="background: var(--accent-red);">🔒</div>
-                            <div>
-                                <div class="credential-name">healthcheck:security-audit</div>
-                                <div class="credential-status">Sundays 8:00 PM CST</div>
-                            </div>
-                        </div>
-                        <span class="page-card-status status-active"><span class="status-dot"></span>Active</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Models Page -->
-            <div class="content-body" id="page-models">
-                <div class="content-header">
-                    <div class="content-header-top">
-                        <div class="content-avatar" style="background: var(--accent-green);">🤖</div>
-                        <div class="content-title">
-                            <h2>Models</h2>
-                        </div>
-                    </div>
-                    <p>LLM configurations and model management.</p>
+                    <p>Documents, files, and generated content.</p>
                 </div>
                 <div class="content-body" style="display: block; padding: 28px 36px;">
                     <div class="page-grid">
                         <div class="page-card">
                             <div class="page-card-header">
-                                <div class="page-card-icon" style="background: var(--accent-cyan);">🦙</div>
-                                <h3>gpt-oss:20b</h3>
+                                <div class="page-card-icon icon-tasks">🌐</div>
+                                <h3>Coldstone Website</h3>
                             </div>
-                            <p>Primary model — balanced general purpose</p>
-                            <span class="page-card-status status-active"><span class="status-dot"></span>Local</span>
+                            <p>E-commerce site for Coldstone Soap Co.</p>
+                            <span class="page-card-status status-active"><span class="status-dot"></span>Deployed</span>
                         </div>
                         <div class="page-card">
                             <div class="page-card-header">
-                                <div class="page-card-icon" style="background: var(--accent-purple);">🧠</div>
-                                <h3>qwen3-coder-next</h3>
+                                <div class="page-card-icon icon-tasks">📊</div>
+                                <h3>Daily Brief</h3>
                             </div>
-                            <p>Complex tasks, coding, research</p>
-                            <span class="page-card-status status-active"><span class="status-dot"></span>Local</span>
-                        </div>
-                        <div class="page-card">
-                            <div class="page-card-header">
-                                <div class="page-card-icon" style="background: var(--accent-blue);">⚡</div>
-                                <h3>glm-4.7-flash</h3>
-                            </div>
-                            <p>Fast, light tasks</p>
-                            <span class="page-card-status status-active"><span class="status-dot"></span>Local</span>
-                        </div>
-                        <div class="page-card">
-                            <div class="page-card-header">
-                                <div class="page-card-icon" style="background: var(--accent-orange);">🚀</div>
-                                <h3>minimax-m2.5:cloud</h3>
-                            </div>
-                            <p>Cloud model (default)</p>
-                            <span class="page-card-status status-active"><span class="status-dot"></span>Cloud</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Knowledge Page -->
-            <div class="content-body" id="page-knowledge">
-                <div class="content-header">
-                    <div class="content-header-top">
-                        <div class="content-avatar" style="background: var(--accent-gold);">📚</div>
-                        <div class="content-title">
-                            <h2>Knowledge</h2>
-                        </div>
-                    </div>
-                    <p>Documents and knowledge base.</p>
-                </div>
-                <div class="content-body" style="display: block; padding: 28px 36px;">
-                    <div class="page-grid">
-                        <div class="page-card">
-                            <div class="page-card-header">
-                                <div class="page-card-icon" style="background: var(--accent-cyan);">📋</div>
-                                <h3>Goals</h3>
-                            </div>
-                            <p>Project goals and specifications</p>
-                            <span class="page-card-status status-active"><span class="status-dot"></span>2 files</span>
-                        </div>
-                        <div class="page-card">
-                            <div class="page-card-header">
-                                <div class="page-card-icon" style="background: var(--accent-purple);">👥</div>
-                                <h3>Agents</h3>
-                            </div>
-                            <p>Agent definitions and roles</p>
-                            <span class="page-card-status status-active"><span class="status-dot"></span>10 agents</span>
-                        </div>
-                        <div class="page-card">
-                            <div class="page-card-header">
-                                <div class="page-card-icon" style="background: var(--accent-green);">📝</div>
-                                <h3>Memory</h3>
-                            </div>
-                            <p>Daily logs and long-term memory</p>
+                            <p>Automated market briefing system</p>
                             <span class="page-card-status status-active"><span class="status-dot"></span>Active</span>
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Approvals Page -->
+            <div class="content-body" id="page-approvals">
+                <div class="content-header">
+                    <div class="content-header-top">
+                        <div class="content-avatar icon-approvals">✅</div>
+                        <div class="content-title">
+                            <h2>Approvals</h2>
+                        </div>
+                    </div>
+                    <p>Pending approvals and authorization requests.</p>
+                </div>
+                <div class="content-body" style="display: block; padding: 28px 36px;">
+                    <p style="color: var(--text-secondary);">No pending approvals.</p>
+                </div>
+            </div>
+
+            <!-- Council Page -->
+            <div class="content-body" id="page-council">
+                <div class="content-header">
+                    <div class="content-header-top">
+                        <div class="content-avatar icon-council">👑</div>
+                        <div class="content-title">
+                            <h2>Council</h2>
+                        </div>
+                    </div>
+                    <p>Strategic leadership and high-level agent oversight.</p>
+                </div>
+                <div class="content-body" style="display: block; padding: 28px 36px;">
+                    <div class="info-grid">
+                        <div class="info-card">
+                            <h3>Council Members</h3>
+                            <ul>
+                                <li>Elon — Master Orchestrator</li>
+                                <li>Sentinel — QA Gate</li>
+                                <li>Cortana — Memory & State</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Calendar Page -->
+            <div class="content-body" id="page-calendar">
+                <div class="content-header">
+                    <div class="content-header-top">
+                        <div class="content-avatar icon-calendar">📅</div>
+                        <div class="content-title">
+                            <h2>Calendar</h2>
+                        </div>
+                    </div>
+                    <p>Scheduled tasks and upcoming events.</p>
+                </div>
+                <div class="content-body" style="display: block; padding: 28px 36px;">
+                    <div class="action-item">
+                        <div class="action-info">
+                            <h4>Daily Market Brief</h4>
+                            <p>Weekdays at 8:45 AM CST</p>
+                        </div>
+                        <span class="page-card-status status-active"><span class="status-dot"></span>Active</span>
+                    </div>
+                    <div class="action-item">
+                        <div class="action-info">
+                            <h4>Security Audit</h4>
+                            <p>Sundays at 8:00 PM CST</p>
+                        </div>
+                        <span class="page-card-status status-active"><span class="status-dot"></span>Active</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Projects Page -->
+            <div class="content-body" id="page-projects">
+                <div class="content-header">
+                    <div class="content-header-top">
+                        <div class="content-avatar icon-projects">📁</div>
+                        <div class="content-title">
+                            <h2>Projects</h2>
+                        </div>
+                    </div>
+                    <p>Active projects and initiatives.</p>
+                </div>
+                <div class="content-body" style="display: block; padding: 28px 36px;">
+                    <div class="page-grid">
                         <div class="page-card">
                             <div class="page-card-header">
-                                <div class="page-card-icon" style="background: var(--accent-orange);">🔧</div>
-                                <h3>Tools</h3>
+                                <div class="page-card-icon icon-tasks">🧼</div>
+                                <h3>Coldstone Website</h3>
                             </div>
-                            <p>Tool governance and routing</p>
-                            <span class="page-card-status status-active"><span class="status-dot"></span>Configured</span>
+                            <p>E-commerce site for soap company</p>
+                            <span class="page-card-status status-active"><span class="status-dot"></span>Deployed</span>
+                        </div>
+                        <div class="page-card">
+                            <div class="page-card-header">
+                                <div class="page-card-icon icon-tasks">📊</div>
+                                <h3>Daily Market Brief</h3>
+                            </div>
+                            <p>Automated morning briefings</p>
+                            <span class="page-card-status status-active"><span class="status-dot"></span>Running</span>
+                        </div>
+                        <div class="page-card">
+                            <div class="page-card-header">
+                                <div class="page-card-icon icon-council">🏠</div>
+                                <h3>Mission Control</h3>
+                            </div>
+                            <p>Agent orchestration system</p>
+                            <span class="page-card-status status-active"><span class="status-dot"></span>Live</span>
                         </div>
                     </div>
                 </div>
@@ -938,7 +807,7 @@
             <div class="content-body" id="page-memory">
                 <div class="content-header">
                     <div class="content-header-top">
-                        <div class="content-avatar" style="background: var(--accent-pink);">🧠</div>
+                        <div class="content-avatar icon-memory">🧠</div>
                         <div class="content-title">
                             <h2>Memory</h2>
                         </div>
@@ -953,35 +822,91 @@
                                 <li>Operator preferences</li>
                                 <li>Key decisions</li>
                                 <li>Agent system structure</li>
-                                <li>Project context</li>
                             </ul>
                         </div>
                         <div class="info-card">
                             <h3>Session Memory</h3>
                             <ul>
                                 <li>Current task state</li>
-                                <li>Recent conversations</li>
                                 <li>Active contexts</li>
                             </ul>
-                        </div>
-                        <div class="info-card full-width">
-                            <h3>Today</h3>
-                            <p>Friday, February 27th, 2026 — Mission Control website deployed to Vercel. Agent system fully documented with temperature settings.</p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Settings Page -->
-            <div class="content-body" id="page-settings">
+            <!-- Docs Page -->
+            <div class="content-body" id="page-docs">
                 <div class="content-header">
                     <div class="content-header-top">
-                        <div class="content-avatar" style="background: var(--text-muted);">⚙️</div>
+                        <div class="content-avatar icon-docs">📝</div>
                         <div class="content-title">
-                            <h2>Settings</h2>
+                            <h2>Docs</h2>
                         </div>
                     </div>
-                    <p>Configuration and system settings.</p>
+                    <p>Documentation and knowledge base.</p>
+                </div>
+                <div class="content-body" style="display: block; padding: 28px 36px;">
+                    <div class="page-grid">
+                        <div class="page-card">
+                            <div class="page-card-header">
+                                <div class="page-card-icon icon-docs">📋</div>
+                                <h3>Goals</h3>
+                            </div>
+                            <p>Project specifications</p>
+                        </div>
+                        <div class="page-card">
+                            <div class="page-card-header">
+                                <div class="page-card-icon icon-agents">🤖</div>
+                                <h3>Agents</h3>
+                            </div>
+                            <p>Agent definitions</p>
+                        </div>
+                        <div class="page-card">
+                            <div class="page-card-header">
+                                <div class="page-card-icon icon-tasks">🔧</div>
+                                <h3>Tools</h3>
+                            </div>
+                            <p>Tool documentation</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- People Page -->
+            <div class="content-body" id="page-people">
+                <div class="content-header">
+                    <div class="content-header-top">
+                        <div class="content-avatar icon-people">👥</div>
+                        <div class="content-title">
+                            <h2>People</h2>
+                        </div>
+                    </div>
+                    <p>Team members and user management.</p>
+                </div>
+                <div class="content-body" style="display: block; padding: 28px 36px;">
+                    <div class="info-grid">
+                        <div class="info-card">
+                            <h3>Operator</h3>
+                            <ul>
+                                <li>John — Boss / Owner</li>
+                                <li>Milo — AI Assistant</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Office Page -->
+            <div class="content-body" id="page-office">
+                <div class="content-header">
+                    <div class="content-header-top">
+                        <div class="content-avatar icon-office">🏢</div>
+                        <div class="content-title">
+                            <h2>Office</h2>
+                        </div>
+                    </div>
+                    <p>Infrastructure and workspace management.</p>
                 </div>
                 <div class="content-body" style="display: block; padding: 28px 36px;">
                     <div class="info-grid">
@@ -990,20 +915,32 @@
                             <ul>
                                 <li>Host: Milo's Mac mini</li>
                                 <li>OS: Darwin 25.4.0</li>
-                                <li>Node: v25.6.1</li>
                                 <li>Gateway: Running</li>
                             </ul>
                         </div>
-                        <div class="info-card">
-                            <h3>Channels</h3>
-                            <ul>
-                                <li>Telegram: Connected</li>
-                                <li>Webchat: Available</li>
-                            </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Team Page -->
+            <div class="content-body" id="page-team">
+                <div class="content-header">
+                    <div class="content-header-top">
+                        <div class="content-avatar icon-team">👥</div>
+                        <div class="content-title">
+                            <h2>Team</h2>
                         </div>
-                        <div class="info-card full-width">
-                            <h3>Workspace</h3>
-                            <p>/Volumes/BotCentral/Users/milo/.openclaw/workspace</p>
+                    </div>
+                    <p>Team overview and collaboration.</p>
+                </div>
+                <div class="content-body" style="display: block; padding: 28px 36px;">
+                    <div class="info-grid">
+                        <div class="info-card">
+                            <h3>AI Agents</h3>
+                            <ul>
+                                <li>10 active agents</li>
+                                <li>Task distribution active</li>
+                            </ul>
                         </div>
                     </div>
                 </div>
@@ -1011,7 +948,7 @@
 
             <div class="footer">
                 <div class="footer-status">
-                    <div class="status-dot"></div>
+                    <div class="status-dot-large"></div>
                     <span>System Online</span>
                 </div>
                 <div style="font-size: 11px; color: var(--text-muted);">
