@@ -138,7 +138,8 @@ export default function Home() {
     { id: 'docs', icon: '📝', label: 'Docs' },
     { id: 'people', icon: '👥', label: 'People' },
     { id: 'office', icon: '🏢', label: 'Office' },
-    { id: 'team', icon: '👥', label: 'Team' }
+    { id: 'team', icon: '👥', label: 'Team' },
+    { id: 'cronjobs', icon: '⏰', label: 'Cron Jobs' }
   ];
 
   if (loading) {
@@ -240,7 +241,7 @@ export default function Home() {
             <div>
               <h3 className="text-sm font-semibold mb-3">⚡ Quick Actions</h3>
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-                {[{ icon: '💬', label: 'Discord', desc: 'Chat', color: 'bg-indigo-500', page: 'discord' }, { icon: '📋', label: 'Tasks', desc: 'Cron jobs', color: 'bg-purple-500', page: 'tasks' }, { icon: '🤖', label: 'Agents', desc: 'Manage', color: 'bg-orange-500', page: 'agents' }, { icon: '🌐', label: 'Projects', desc: 'View all', color: 'bg-emerald-500', page: 'projects' }].map(action => (
+                {[{ icon: '💬', label: 'Discord', desc: 'Chat', color: 'bg-indigo-500', page: 'discord' }, { icon: '📋', label: 'Tasks', desc: 'Cron jobs', color: 'bg-purple-500', page: 'cronjobs' }, { icon: '🤖', label: 'Agents', desc: 'Manage', color: 'bg-orange-500', page: 'agents' }, { icon: '🌐', label: 'Projects', desc: 'View all', color: 'bg-emerald-500', page: 'projects' }].map(action => (
                   <button key={action.label} onClick={() => setActivePage(action.page)} className="flex items-center gap-3 p-3.5 bg-[#1a1a24] border border-[#2a2a3a] rounded-xl hover:border-cyan-500/50 hover:-translate-y-0.5 transition-all text-left">
                     <div className={`w-9 h-9 rounded-lg flex items-center justify-center text-base ${action.color}`}>{action.icon}</div>
                     <div><div className="text-xs font-semibold">{action.label}</div><div className="text-[10px] text-[#8888a0]">{action.desc}</div></div>
@@ -398,6 +399,48 @@ export default function Home() {
         {['content', 'approvals', 'council', 'memory', 'docs', 'people', 'office', 'team'].includes(activePage) && (
           <div className="p-6 lg:p-8 pt-16 lg:pr-8">
             <div className="mb-6"><h2 className="text-xl font-bold capitalize">{activePage}</h2><p className="text-sm text-[#8888a0]">Coming soon...</p></div>
+          </div>
+        )}
+
+        {activePage === 'cronjobs' && (
+          <div className="p-6 lg:p-8 pt-16 lg:pr-8">
+            <div className="mb-6">
+              <h2 className="text-xl font-bold flex items-center gap-3">
+                <span className="w-10 h-10 rounded-xl bg-cyan-500 flex items-center justify-center">⏰</span>
+                Cron Jobs
+              </h2>
+              <p className="text-sm text-[#8888a0]">Scheduled automated tasks.</p>
+            </div>
+
+            <div className="space-y-4">
+              {cronJobs.map(cron => (
+                <div key={cron.name} className="bg-[#16161f] border border-[#2a2a3a] rounded-xl p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="font-semibold">{cron.name}</h3>
+                    <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-cyan-500/15 text-cyan-400">{cron.schedule}</span>
+                  </div>
+                  <p className="text-xs text-[#8888a0] mb-3">{cron.description}</p>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="bg-[#1a1a24] p-2.5 rounded-lg">
+                      <div className="text-[10px] text-[#55556a] uppercase mb-1">Last Run</div>
+                      <div className="text-xs font-semibold">{cron.lastRun}</div>
+                    </div>
+                    <div className="bg-[#1a1a24] p-2.5 rounded-lg">
+                      <div className="text-[10px] text-[#55556a] uppercase mb-1">Next Run</div>
+                      <div className="text-xs font-semibold">{cron.nextRun}</div>
+                    </div>
+                  </div>
+                  <div className="mt-3 flex items-center justify-between">
+                    <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${cron.status === 'success' ? 'bg-emerald-500/15 text-emerald-400' : 'bg-red-500/15 text-red-400'}`}>
+                      {cron.status === 'success' ? '✓ Success' : '✗ Error'}
+                    </span>
+                    <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${cron.enabled ? 'bg-emerald-500/15 text-emerald-400' : 'bg-[#2a2a3a] text-[#55556a]'}`}>
+                      {cron.enabled ? 'Enabled' : 'Disabled'}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         )}
 
