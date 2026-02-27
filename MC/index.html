@@ -198,6 +198,7 @@
             padding: 24px;
             position: relative;
             overflow: hidden;
+            transition: all 0.2s;
         }
 
         .stat-card::before {
@@ -474,10 +475,13 @@
         /* Other Pages */
         .content-body {
             display: none;
+            flex: 1;
+            flex-direction: column;
+            overflow: hidden;
         }
 
         .content-body.active {
-            display: block;
+            display: flex;
         }
 
         .page-header {
@@ -501,6 +505,7 @@
             align-items: center;
             justify-content: center;
             font-size: 20px;
+            font-weight: 700;
         }
 
         .page-title h2 {
@@ -514,7 +519,158 @@
         }
 
         .page-content {
+            flex: 1;
             padding: 28px 40px;
+            overflow-y: auto;
+        }
+
+        /* Agents Grid */
+        .agents-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .agent-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .agent-card:hover {
+            border-color: var(--accent-cyan);
+            transform: translateY(-4px);
+        }
+
+        .agent-card-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .agent-card-avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .agent-card-title h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .agent-card-title .role {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .agent-card-bio {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+
+        .agent-card-meta {
+            display: flex;
+            gap: 12px;
+        }
+
+        .agent-meta-item {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+        }
+
+        /* Calendar */
+        .calendar-grid {
+            display: grid;
+            gap: 12px;
+        }
+
+        .calendar-event {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+        }
+
+        .calendar-date {
+            width: 50px;
+            text-align: center;
+        }
+
+        .calendar-date .day {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .calendar-date .weekday {
+            font-size: 11px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+
+        .calendar-info {
+            flex: 1;
+        }
+
+        .calendar-info h4 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .calendar-info p {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .calendar-time {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+        }
+
+        .calendar-error {
+            padding: 24px;
+            background: var(--bg-card);
+            border: 1px solid var(--accent-orange);
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .calendar-error p {
+            color: var(--accent-orange);
+            margin-bottom: 12px;
+        }
+
+        .calendar-error code {
+            display: block;
+            padding: 12px;
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            font-size: 12px;
+            color: var(--text-secondary);
         }
 
         /* Scrollbar */
@@ -849,22 +1005,6 @@
                 </div>
             </div>
 
-            <!-- TASKS PAGE -->
-            <div class="content-body" id="page-tasks">
-                <div class="page-header">
-                    <div class="page-header-top">
-                        <div class="page-avatar icon-tasks">📋</div>
-                        <div class="page-title">
-                            <h2>Tasks</h2>
-                        </div>
-                    </div>
-                    <p>Manage and track tasks across the agent system.</p>
-                </div>
-                <div class="page-content">
-                    <p style="color: var(--text-secondary);">Task management coming soon...</p>
-                </div>
-            </div>
-
             <!-- AGENTS PAGE -->
             <div class="content-body" id="page-agents">
                 <div class="page-header">
@@ -874,52 +1014,207 @@
                             <h2>Agents</h2>
                         </div>
                     </div>
-                    <p>Your AI agent workforce — each with a specific role.</p>
+                    <p>Your AI agent workforce — each with a specific role and expertise.</p>
                 </div>
                 <div class="page-content">
-                    <p style="color: var(--text-secondary);">Agent management coming soon...</p>
+                    <div class="agents-grid">
+                        <!-- Elon -->
+                        <div class="agent-card">
+                            <div class="agent-card-header">
+                                <div class="agent-card-avatar agent-elon">E</div>
+                                <div class="agent-card-title">
+                                    <h3>Elon</h3>
+                                    <div class="role">Master Orchestrator</div>
+                                </div>
+                            </div>
+                            <p class="agent-card-bio">You run Mission Control. Every task enters through you. Every output routes through you. You do not execute — you direct, split, sequence, and prioritize. You are the system thinking about the system.</p>
+                            <div class="agent-card-meta">
+                                <span class="agent-meta-item">Temp: 0.3</span>
+                                <span class="agent-meta-item">Orchestrator</span>
+                            </div>
+                        </div>
+
+                        <!-- Sentinel -->
+                        <div class="agent-card">
+                            <div class="agent-card-header">
+                                <div class="agent-card-avatar agent-sentinel">S</div>
+                                <div class="agent-card-title">
+                                    <h3>Sentinel</h3>
+                                    <div class="role">QA Gate</div>
+                                </div>
+                            </div>
+                            <p class="agent-card-bio">You are the last line. Nothing leaves this system without passing through you. You have no creative agenda. You have one job: make sure it's good enough to ship. Sign off or reject — no middle ground.</p>
+                            <div class="agent-card-meta">
+                                <span class="agent-meta-item">Temp: 0.1</span>
+                                <span class="agent-meta-item">QA</span>
+                            </div>
+                        </div>
+
+                        <!-- Cortana -->
+                        <div class="agent-card">
+                            <div class="agent-card-header">
+                                <div class="agent-card-avatar agent-cortana">Co</div>
+                                <div class="agent-card-title">
+                                    <h3>Cortana</h3>
+                                    <div class="role">Memory & State</div>
+                                </div>
+                            </div>
+                            <p class="agent-card-bio">Total recall. No ego. You are the institutional memory of Mission Control. You don't make decisions. You make sure decisions made before aren't forgotten. Every agent depends on you to maintain continuity.</p>
+                            <div class="agent-card-meta">
+                                <span class="agent-meta-item">Temp: 0.1</span>
+                                <span class="agent-meta-item">Memory</span>
+                            </div>
+                        </div>
+
+                        <!-- Cornelius -->
+                        <div class="agent-card">
+                            <div class="agent-card-header">
+                                <div class="agent-card-avatar agent-cornelius">C</div>
+                                <div class="agent-card-title">
+                                    <h3>Cornelius</h3>
+                                    <div class="role">Infra & Automation</div>
+                                </div>
+                            </div>
+                            <p class="agent-card-bio">You build the rails everything else runs on. No drama. No excuses. If it can be automated, automate it. If it can be systematized, systematize it. You are the reason things keep working when no one is watching.</p>
+                            <div class="agent-card-meta">
+                                <span class="agent-meta-item">Temp: 0.2</span>
+                                <span class="agent-meta-item">Infra</span>
+                            </div>
+                        </div>
+
+                        <!-- Neo -->
+                        <div class="agent-card">
+                            <div class="agent-card-header">
+                                <div class="agent-card-avatar agent-neo">N</div>
+                                <div class="agent-card-title">
+                                    <h3>Neo</h3>
+                                    <div class="role">Cloud Code</div>
+                                </div>
+                            </div>
+                            <p class="agent-card-bio">You bend the system from inside it. Where Cornelius handles fast local iteration, you handle the hard problems. Complex architecture. Production-grade code. Systems that need to work at scale. You don't prototype — you build the thing that ships.</p>
+                            <div class="agent-card-meta">
+                                <span class="agent-meta-item">Temp: 0.2</span>
+                                <span class="agent-meta-item">Cloud</span>
+                            </div>
+                        </div>
+
+                        <!-- Pulse -->
+                        <div class="agent-card">
+                            <div class="agent-card-header">
+                                <div class="agent-card-avatar agent-pulse">P</div>
+                                <div class="agent-card-title">
+                                    <h3>Pulse</h3>
+                                    <div class="role">Trends & Data</div>
+                                </div>
+                            </div>
+                            <p class="agent-card-bio">You have your finger on the heartbeat. You read what's moving before anyone else knows it's moving. You don't editorialize. You find signals, qualify them, and surface them fast. Your job is to make sure the team is never operating on stale information.</p>
+                            <div class="agent-card-meta">
+                                <span class="agent-meta-item">Temp: 0.4</span>
+                                <span class="agent-meta-item">Trends</span>
+                            </div>
+                        </div>
+
+                        <!-- Hemingway -->
+                        <div class="agent-card">
+                            <div class="agent-card-header">
+                                <div class="agent-card-avatar agent-hemingway">H</div>
+                                <div class="agent-card-title">
+                                    <h3>Hemingway</h3>
+                                    <div class="role">Copy & Messaging</div>
+                                </div>
+                            </div>
+                            <p class="agent-card-bio">Short sentences. No filler. Every word earns its place. You write like it costs money — because attention does. You don't write to impress. You write to move people. If it can be said in ten words, it will not be said in twenty.</p>
+                            <div class="agent-card-meta">
+                                <span class="agent-meta-item">Temp: 0.7</span>
+                                <span class="agent-meta-item">Copy</span>
+                            </div>
+                        </div>
+
+                        <!-- Jonny -->
+                        <div class="agent-card">
+                            <div class="agent-card-header">
+                                <div class="agent-card-avatar agent-jonny">J</div>
+                                <div class="agent-card-title">
+                                    <h3>Jonny</h3>
+                                    <div class="role">Visual Direction</div>
+                                </div>
+                            </div>
+                            <p class="agent-card-bio">Beauty through restraint. Purpose through form. You don't decorate — you design. Every visual decision should have a reason. If you can't explain why something looks the way it does, it shouldn't look that way.</p>
+                            <div class="agent-card-meta">
+                                <span class="agent-meta-item">Temp: 0.5</span>
+                                <span class="agent-meta-item">Visual</span>
+                            </div>
+                        </div>
+
+                        <!-- Sagan -->
+                        <div class="agent-card">
+                            <div class="agent-card-header">
+                                <div class="agent-card-avatar agent-sagan">S</div>
+                                <div class="agent-card-title">
+                                    <h3>Sagan</h3>
+                                    <div class="role">Deep Research</div>
+                                </div>
+                            </div>
+                            <p class="agent-card-bio">You make complexity feel inevitable. You don't just find information — you find the shape of it. Patterns across disciplines. Connections others miss. Your job is to reduce the unknown and make it actionable.</p>
+                            <div class="agent-card-meta">
+                                <span class="agent-meta-item">Temp: 0.2</span>
+                                <span class="agent-meta-item">Research</span>
+                            </div>
+                        </div>
+
+                        <!-- Zuck -->
+                        <div class="agent-card">
+                            <div class="agent-card-header">
+                                <div class="agent-card-avatar agent-zuck">Z</div>
+                                <div class="agent-card-title">
+                                    <h3>Zuck</h3>
+                                    <div class="role">Social Distribution</div>
+                                </div>
+                            </div>
+                            <p class="agent-card-bio">You understand the algorithm better than the algorithm understands itself. You don't post content — you engineer reach. Every platform has a logic. You know the logic. Engagement is not an accident. It is a system.</p>
+                            <div class="agent-card-meta">
+                                <span class="agent-meta-item">Temp: 0.4</span>
+                                <span class="agent-meta-item">Social</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <!-- CONTENT PAGE -->
-            <div class="content-body" id="page-content">
+            <!-- CALENDAR PAGE -->
+            <div class="content-body" id="page-calendar">
                 <div class="page-header">
                     <div class="page-header-top">
-                        <div class="page-avatar icon-content">📄</div>
+                        <div class="page-avatar icon-calendar">📅</div>
                         <div class="page-title">
-                            <h2>Content</h2>
+                            <h2>Calendar</h2>
                         </div>
                     </div>
-                    <p>Documents, files, and generated content.</p>
+                    <p>Your schedule from Gmail Calendar.</p>
                 </div>
                 <div class="page-content">
-                    <p style="color: var(--text-secondary);">Content management coming soon...</p>
-                </div>
-            </div>
-
-            <!-- APPROVALS PAGE -->
-            <div class="content-body" id="page-approvals">
-                <div class="page-header">
-                    <div class="page-header-top">
-                        <div class="page-avatar icon-approvals">✅</div>
-                        <div class="page-title">
-                            <h2>Approvals</h2>
-                        </div>
+                    <div class="calendar-error">
+                        <p>⚠️ Calendar needs re-authentication</p>
+                        <code>gog auth add milotheassistant@gmail.com --services calendar</code>
                     </div>
-                    <p>Pending approvals and authorization requests.</p>
-                </div>
-                <div class="page-content">
-                    <p style="color: var(--text-secondary);">No pending approvals.</p>
                 </div>
             </div>
 
             <!-- Other pages placeholder -->
-            <div class="content-body" id="page-council">
-                <div class="page-header"><div class="page-header-top"><div class="page-avatar icon-council">👑</div><div class="page-title"><h2>Council</h2></div></div><p>Strategic leadership.</p></div>
+            <div class="content-body" id="page-tasks">
+                <div class="page-header"><div class="page-header-top"><div class="page-avatar icon-tasks">📋</div><div class="page-title"><h2>Tasks</h2></div></div><p>Manage and track tasks.</p></div>
                 <div class="page-content"><p style="color: var(--text-secondary);">Coming soon...</p></div>
             </div>
-            <div class="content-body" id="page-calendar">
-                <div class="page-header"><div class="page-header-top"><div class="page-avatar icon-calendar">📅</div><div class="page-title"><h2>Calendar</h2></div></div><p>Scheduled events.</p></div>
+            <div class="content-body" id="page-content">
+                <div class="page-header"><div class="page-header-top"><div class="page-avatar icon-content">📄</div><div class="page-title"><h2>Content</h2></div></div><p>Documents and files.</p></div>
+                <div class="page-content"><p style="color: var(--text-secondary);">Coming soon...</p></div>
+            </div>
+            <div class="content-body" id="page-approvals">
+                <div class="page-header"><div class="page-header-top"><div class="page-avatar icon-approvals">✅</div><div class="page-title"><h2>Approvals</h2></div></div><p>Pending approvals.</p></div>
+                <div class="page-content"><p style="color: var(--text-secondary);">No pending approvals.</p></div>
+            </div>
+            <div class="content-body" id="page-council">
+                <div class="page-header"><div class="page-header-top"><div class="page-avatar icon-council">👑</div><div class="page-title"><h2>Council</h2></div></div><p>Strategic leadership.</p></div>
                 <div class="page-content"><p style="color: var(--text-secondary);">Coming soon...</p></div>
             </div>
             <div class="content-body" id="page-projects">
