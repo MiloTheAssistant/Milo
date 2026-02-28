@@ -1,25 +1,73 @@
 @import "tailwindcss";
 
 :root {
-  --background: #0a0a0f;
+  --background: #0f172a;
   --foreground: #ffffff;
 }
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
+* { 
+  margin: 0; 
+  padding: 0; 
+  box-sizing: border-box; 
+}
+
+html {
+  scroll-behavior: smooth;
+}
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  overflow-x: hidden;
 }
 
-::-webkit-scrollbar { width: 5px; }
-::-webkit-scrollbar-track { background: #0a0a0f; }
-::-webkit-scrollbar-thumb { background: #2a2a3a; border-radius: 3px; }
+::-webkit-scrollbar { 
+  width: 6px; 
+}
+::-webkit-scrollbar-track { 
+  background: #0f172a; 
+}
+::-webkit-scrollbar-thumb { 
+  background: #334155; 
+  border-radius: 3px; 
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
 
 .line-clamp-2 {
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+/* Custom animations */
+@keyframes pulse-glow {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* Smooth transitions */
+* {
+  transition-property: background-color, border-color, color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+/* Prevent text selection on buttons */
+button {
+  user-select: none;
+}
+
+/* Better focus states */
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid #22d3ee;
+  outline-offset: 2px;
 }

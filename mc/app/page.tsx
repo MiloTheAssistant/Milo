@@ -132,8 +132,8 @@ export default function Home() {
   if (loading) return <div className="min-h-screen bg-slate-950 text-white flex items-center justify-center"><div className="text-cyan-400">Loading...</div></div>;
 
   return (
-    <div className="min-h-screen bg text-white">
-     -slate-950 {/* Header */}
+    <div className="min-h-screen bg-slate-950 text-white">
+      {/* Header */}
       <header className="fixed top-0 left-0 right-0 h-16 bg-slate-900/95 backdrop-blur border-b border-slate-800 z-40 flex items-center justify-between px-4 lg:px-6">
         <div className="flex items-center gap-3">
           <button onClick={() => setSidebarOpen(!sidebarOpen)} className="lg:hidden p-2 rounded-lg hover:bg-slate-800">
