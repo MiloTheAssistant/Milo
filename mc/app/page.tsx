@@ -9,7 +9,18 @@ interface Agent {
   temp: number;
   active: boolean;
   color: string;
+  status?: string;
   bio?: string;
+}
+
+interface Task {
+  id: string;
+  agent: string;
+  model: string;
+  inputTokens: number;
+  outputTokens: number;
+  updatedAt: string;
+  kind: string;
 }
 
 interface CronJob {
@@ -18,8 +29,9 @@ interface CronJob {
   schedule: string;
   enabled: boolean;
   lastRun: string;
-  status: string;
   nextRun: string;
+  status: string;
+  lastDuration: string;
 }
 
 interface Project {
@@ -39,7 +51,16 @@ interface DiscordData {
   status: string;
 }
 
+interface Channel {
+  id: string;
+  name: string;
+  provider: string;
+  enabled: boolean;
+  status: string;
+}
+
 const colorClasses: Record<string, string> = {
+  main: 'from-cyan-400 to-cyan-600',
   elon: 'from-cyan-400 to-cyan-600', sentinel: 'from-red-400 to-red-600',
   cortana: 'from-purple-400 to-purple-600', cornelius: 'from-teal-400 to-teal-600',
   neo: 'from-blue-400 to-blue-600', pulse: 'from-pink-400 to-pink-500',
@@ -66,53 +87,37 @@ const navItems = [
 
 export default function Home() {
   const [agents, setAgents] = useState<Agent[]>([]);
+  const [tasks, setTasks] = useState<Task[]>([]);
   const [cronJobs, setCronJobs] = useState<CronJob[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
   const [discord, setDiscord] = useState<DiscordData | null>(null);
+  const [channels, setChannels] = useState<Channel[]>([]);
   const [activePage, setActivePage] = useState('home');
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [lastUpdated, setLastUpdated] = useState<string>('');
 
-  useEffect(() => {
-    fetch('/api/data').then(r => r.json()).then(data => {
+  const fetchData = async () => {
+    try {
+      const res = await fetch('/api/data');
+      const data = await res.json();
       setAgents(data.agents || []);
+      setTasks(data.activeTasks || []);
       setCronJobs(data.cronJobs || []);
       setProjects(data.projects || []);
       setDiscord(data.discord || null);
-      setLoading(false);
-    }).catch(() => {
-      setAgents([
-        { id: 'elon', name: 'Elon', role: 'Master Orchestrator', temp: 0.3, active: true, color: 'elon', bio: 'You run Mission Control.' },
-        { id: 'sentinel', name: 'Sentinel', role: 'QA Gate', temp: 0.1, active: true, color: 'sentinel', bio: 'Last line.' },
-        { id: 'cortana', name: 'Cortana', role: 'Memory', temp: 0.1, active: true, color: 'cortana', bio: 'Total recall.' },
-        { id: 'cornelius', name: 'Cornelius', role: 'Infra', temp: 0.2, active: true, color: 'cornelius', bio: 'Builds rails.' },
-        { id: 'neo', name: 'Neo', role: 'Cloud', temp: 0.2, active: true, color: 'neo', bio: 'Complex code.' },
-        { id: 'pulse', name: 'Pulse', role: 'Trends', temp: 0.4, active: true, color: 'pulse', bio: 'Finger on pulse.' },
-        { id: 'hemingway', name: 'Hemingway', role: 'Copy', temp: 0.7, active: true, color: 'hemingway', bio: 'Short sentences.' },
-        { id: 'jonny', name: 'Jonny', role: 'Visual', temp: 0.5, active: true, color: 'jonny', bio: 'Beauty.' },
-        { id: 'sagan', name: 'Sagan', role: 'Research', temp: 0.2, active: true, color: 'sagan', bio: 'Complexity.' },
-        { id: 'zuck', name: 'Zuck', role: 'Social', temp: 0.4, active: true, color: 'zuck', bio: 'Algorithm.' }
-      ]);
-      setCronJobs([
-        { name: 'daily-market-brief', description: 'Daily Market Brief', schedule: '45 8 * * 1-5', enabled: true, lastRun: 'Feb 27, 2026 8:45 AM', status: 'success', nextRun: 'Feb 28, 2026 8:45 AM' },
-        { name: 'healthcheck:security-audit', description: 'Weekly security audit', schedule: '0 20 * * 0', enabled: true, lastRun: 'Feb 23, 2026 8:00 PM', status: 'error', nextRun: 'Mar 2, 2026 8:00 PM' }
-      ]);
-      setProjects([
-        { name: 'Coldstone Soap Co.', url: 'https://coldstone-eta.vercel.app', description: 'E-commerce.', status: 'Live', icon: '🧼' },
-        { name: 'Mission Control', url: 'https://milo-mc.vercel.app', description: 'AI dashboard.', status: 'Live', icon: '🎯' },
-        { name: 'Daily Market Brief', url: '#', description: 'Briefing.', status: 'Live', icon: '📊' },
-        { name: 'OpenClaw Gateway', url: 'http://100.71.217.107:8080', description: 'Home server.', status: 'Live', icon: '🖥️' }
-      ]);
-      setDiscord({
-        connected: true,
-        appId: '1477080375812423700',
-        publicKey: '2b167934f96b82dd73b97df4ac9af7e9b80d73ebfefb41475d1723e253160dd0',
-        botName: 'Milo',
-        servers: [{ name: 'Milo HQ', id: '1477080375812423700', members: 2, channels: 5 }],
-        status: 'online'
-      });
-      setLoading(false);
-    });
+      setChannels(data.channels || []);
+      setLastUpdated(new Date().toLocaleTimeString());
+    } catch (e) {
+      console.error('Failed to fetch data', e);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchData();
+    const interval = setInterval(fetchData, 30000); // Refresh every 30s
+    return () => clearInterval(interval);
   }, []);
 
   const toggleAgent = async (agentId: string) => {
@@ -141,8 +146,12 @@ export default function Home() {
           </button>
           <h1 className="text-lg font-bold tracking-wide">MISSION<span className="text-cyan-400">CONTROL</span></h1>
         </div>
-        <div className="flex items-center gap-2">
-          <span className="hidden sm:inline text-xs text-slate-400 mr-2">{getGreeting()}, Boss</span>
+        <div className="flex items-center gap-3">
+          <span className="hidden sm:inline text-xs text-slate-400">{lastUpdated && `Updated ${lastUpdated}`}</span>
+          <button onClick={fetchData} className="p-2 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white" title="Refresh">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+          </button>
+          <span className="text-xs text-slate-400 mr-2">{getGreeting()}, Boss</span>
           <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></div>
         </div>
       </header>
@@ -183,22 +192,49 @@ export default function Home() {
                 <p className="text-slate-400">Everything running smoothly across your AI ecosystem</p>
               </div>
 
+              {/* Active Tasks Banner */}
+              {tasks.length > 0 && (
+                <div className="mb-6 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 border border-cyan-500/30 rounded-xl p-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></div>
+                    <span className="text-cyan-400 font-semibold">Active Tasks In Progress</span>
+                  </div>
+                  <div className="space-y-2">
+                    {tasks.map(task => (
+                      <div key={task.id} className="flex items-center justify-between bg-slate-900/50 rounded-lg p-3">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-lg bg-cyan-500/20 flex items-center justify-center text-sm">🤖</div>
+                          <div>
+                            <div className="text-sm font-medium">{task.agent}</div>
+                            <div className="text-xs text-slate-400">{task.model}</div>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className="text-xs text-slate-400">{task.kind}</div>
+                          <div className="text-xs text-cyan-400">{(task.inputTokens + task.outputTokens).toLocaleString()} tokens</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {/* Stats Grid */}
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4 mb-8">
                 {[
                   { icon: '🤖', label: 'Active Agents', value: agents.filter(a => a.active).length, color: 'cyan' },
-                  { icon: '⏰', label: 'Cron Jobs', value: cronJobs.filter(c => c.enabled).length, color: 'emerald' },
+                  { icon: '📋', label: 'Cron Jobs', value: cronJobs.filter(c => c.enabled).length, color: 'emerald' },
                   { icon: '📁', label: 'Projects', value: projects.length, color: 'purple' },
                   { icon: '💬', label: 'Discord', value: discord?.connected ? '1' : '0', color: 'indigo' }
                 ].map(stat => (
-                  <div key={stat.label} className="bg-slate-900 border border-slate-800 rounded-xl p-4 lg:p-5">
+                  <button key={stat.label} onClick={() => setActivePage(stat.label === 'Discord' ? 'discord' : stat.label === 'Cron Jobs' ? 'tasks' : 'agents')} className="bg-slate-900 border border-slate-800 rounded-xl p-4 lg:p-5 hover:border-cyan-500/50 transition-all text-left">
                     <div className="flex items-center justify-between mb-2">
                       <span className="text-xl">{stat.icon}</span>
                       <div className={`w-2 h-2 rounded-full bg-${stat.color}-400`}></div>
                     </div>
                     <div className="text-2xl lg:text-3xl font-bold">{stat.value}</div>
                     <div className="text-xs text-slate-400">{stat.label}</div>
-                  </div>
+                  </button>
                 ))}
               </div>
 
@@ -211,32 +247,31 @@ export default function Home() {
                   </div>
                   <div className="space-y-2">
                     {agents.slice(0, 5).map(agent => (
-                      <div key={agent.id} className="flex items-center gap-3 p-2.5 bg-slate-800/50 rounded-lg">
+                      <button key={agent.id} onClick={() => setActivePage('agents')} className="w-full flex items-center gap-3 p-2.5 bg-slate-800/50 rounded-lg hover:bg-slate-800 transition-colors text-left">
                         <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold bg-gradient-to-br ${colorClasses[agent.color]}`}>{agent.name[0]}</div>
                         <div className="flex-1 min-w-0">
                           <div className="text-sm font-medium truncate">{agent.name}</div>
                           <div className="text-xs text-slate-400 truncate">{agent.role}</div>
                         </div>
                         <span className={`w-2 h-2 rounded-full ${agent.active ? 'bg-emerald-400' : 'bg-slate-500'}`}></span>
-                      </div>
+                      </button>
                     ))}
                   </div>
                 </div>
 
                 <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 lg:p-5">
-                  <h3 className="font-semibold mb-4">Recent Activity</h3>
-                  <div className="space-y-3">
-                    {[
-                      { icon: '💬', text: 'Discord Connected', sub: 'Bot added to server', color: 'indigo' },
-                      { icon: '📊', text: 'Daily Market Brief', sub: 'Feb 27, 2026 8:45 AM', color: 'emerald' },
-                      { icon: '🎯', text: 'Mission Control v1.3', sub: 'Deployed to Vercel', color: 'cyan' }
-                    ].map((item, i) => (
-                      <div key={i} className="flex items-start gap-3 p-2.5 bg-slate-800/50 rounded-lg">
-                        <span className="text-lg">{item.icon}</span>
-                        <div>
-                          <div className="text-sm font-medium">{item.text}</div>
-                          <div className="text-xs text-slate-400">{item.sub}</div>
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="font-semibold">Scheduled Tasks</h3>
+                    <button onClick={() => setActivePage('tasks')} className="text-xs text-cyan-400 hover:underline">View all</button>
+                  </div>
+                  <div className="space-y-2">
+                    {cronJobs.slice(0, 3).map(cron => (
+                      <div key={cron.name} className="flex items-center justify-between p-2.5 bg-slate-800/50 rounded-lg">
+                        <div className="flex items-center gap-3">
+                          <div className={`w-2 h-2 rounded-full ${cron.status === 'success' ? 'bg-emerald-400' : 'bg-red-400'}`}></div>
+                          <div className="text-sm font-medium truncate">{cron.name}</div>
                         </div>
+                        <div className="text-xs text-slate-400">{cron.schedule}</div>
                       </div>
                     ))}
                   </div>
@@ -288,48 +323,93 @@ export default function Home() {
                       </label>
                     </div>
                     <p className="text-xs text-slate-400 line-clamp-2 mb-2">{agent.bio}</p>
-                    <span className="text-xs text-slate-500">Temp: {agent.temp}</span>
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-slate-500">Temp: {agent.temp}</span>
+                      <span className={`px-2 py-0.5 rounded-full text-xs ${agent.status === 'online' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-700 text-slate-400'}`}>{agent.status}</span>
+                    </div>
                   </div>
                 ))}
               </div>
             </div>
           )}
 
-          {/* CRON JOBS PAGE */}
+          {/* TASKS PAGE */}
           {activePage === 'tasks' && (
             <div>
               <div className="mb-6">
-                <h2 className="text-2xl font-bold mb-1">Cron Jobs</h2>
-                <p className="text-slate-400">Scheduled automated tasks</p>
+                <h2 className="text-2xl font-bold mb-1">Tasks</h2>
+                <p className="text-slate-400">Active sessions and scheduled cron jobs</p>
               </div>
-              <div className="space-y-4">
-                {cronJobs.map(cron => (
-                  <div key={cron.name} className="bg-slate-900 border border-slate-800 rounded-xl p-4">
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
-                      <h3 className="font-semibold">{cron.name}</h3>
-                      <span className="px-3 py-1 rounded-full text-xs font-medium bg-slate-800 text-cyan-400">{cron.schedule}</span>
-                    </div>
-                    <p className="text-sm text-slate-400 mb-3">{cron.description}</p>
-                    <div className="grid grid-cols-2 gap-3">
-                      <div className="bg-slate-800/50 p-3 rounded-lg">
-                        <div className="text-xs text-slate-500 mb-1">Last Run</div>
-                        <div className="text-sm font-medium">{cron.lastRun}</div>
+              
+              {/* Active Sessions */}
+              <div className="mb-8">
+                <h3 className="font-semibold mb-4">Active Sessions</h3>
+                {tasks.length > 0 ? (
+                  <div className="space-y-3">
+                    {tasks.map(task => (
+                      <div key={task.id} className="bg-slate-900 border border-slate-800 rounded-xl p-4">
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-lg bg-cyan-500/20 flex items-center justify-center">🤖</div>
+                            <div>
+                              <div className="font-medium">{task.agent}</div>
+                              <div className="text-xs text-slate-400">{task.id}</div>
+                            </div>
+                          </div>
+                          <div className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></div>
+                        </div>
+                        <div className="grid grid-cols-3 gap-3 text-sm">
+                          <div><span className="text-slate-500">Model</span><div className="text-xs">{task.model}</div></div>
+                          <div><span className="text-slate-500">Input</span><div className="text-xs">{task.inputTokens.toLocaleString()}</div></div>
+                          <div><span className="text-slate-500">Output</span><div className="text-xs">{task.outputTokens.toLocaleString()}</div></div>
+                        </div>
                       </div>
-                      <div className="bg-slate-800/50 p-3 rounded-lg">
-                        <div className="text-xs text-slate-500 mb-1">Next Run</div>
-                        <div className="text-sm font-medium">{cron.nextRun}</div>
-                      </div>
-                    </div>
-                    <div className="mt-3 flex gap-2">
-                      <span className={`px-3 py-1 rounded-full text-xs font-medium ${cron.status === 'success' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-red-500/20 text-red-400'}`}>
-                        {cron.status === 'success' ? '✓ Success' : '✗ Error'}
-                      </span>
-                      <span className={`px-3 py-1 rounded-full text-xs font-medium ${cron.enabled ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-700 text-slate-400'}`}>
-                        {cron.enabled ? 'Enabled' : 'Disabled'}
-                      </span>
-                    </div>
+                    ))}
                   </div>
-                ))}
+                ) : (
+                  <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 text-center">
+                    <p className="text-slate-400">No active sessions</p>
+                  </div>
+                )}
+              </div>
+
+              {/* Cron Jobs */}
+              <div>
+                <h3 className="font-semibold mb-4">Cron Jobs</h3>
+                <div className="space-y-4">
+                  {cronJobs.map(cron => (
+                    <div key={cron.name} className="bg-slate-900 border border-slate-800 rounded-xl p-4">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+                        <h3 className="font-semibold">{cron.name}</h3>
+                        <span className="px-3 py-1 rounded-full text-xs font-medium bg-slate-800 text-cyan-400">{cron.schedule}</span>
+                      </div>
+                      <p className="text-sm text-slate-400 mb-3">{cron.description}</p>
+                      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                        <div className="bg-slate-800/50 p-3 rounded-lg">
+                          <div className="text-xs text-slate-500 mb-1">Last Run</div>
+                          <div className="text-sm font-medium">{cron.lastRun}</div>
+                        </div>
+                        <div className="bg-slate-800/50 p-3 rounded-lg">
+                          <div className="text-xs text-slate-500 mb-1">Next Run</div>
+                          <div className="text-sm font-medium">{cron.nextRun}</div>
+                        </div>
+                        <div className="bg-slate-800/50 p-3 rounded-lg">
+                          <div className="text-xs text-slate-500 mb-1">Duration</div>
+                          <div className="text-sm font-medium">{cron.lastDuration}</div>
+                        </div>
+                        <div className="bg-slate-800/50 p-3 rounded-lg">
+                          <div className="text-xs text-slate-500 mb-1">Status</div>
+                          <div className={`text-sm font-medium ${cron.status === 'success' ? 'text-emerald-400' : 'text-red-400'}`}>{cron.status === 'success' ? '✓ Success' : '✗ Error'}</div>
+                        </div>
+                      </div>
+                      <div className="mt-3 flex gap-2">
+                        <span className={`px-3 py-1 rounded-full text-xs font-medium ${cron.enabled ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-700 text-slate-400'}`}>
+                          {cron.enabled ? 'Enabled' : 'Disabled'}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           )}
@@ -440,7 +520,7 @@ export default function Home() {
           )}
 
           {/* OTHER PAGES */}
-          {['content', 'docs', 'tasks', 'council', 'approvals', 'memory', 'people', 'office', 'team'].includes(activePage) && (
+          {['content', 'docs', 'council', 'approvals', 'memory', 'people', 'office', 'team'].includes(activePage) && (
             <div>
               <div className="mb-6">
                 <h2 className="text-2xl font-bold mb-1 capitalize">{activePage.replace('cronjobs', 'Cron Jobs')}</h2>
