@@ -38,9 +38,19 @@ export async function GET(request: Request) {
     if (channelsRes.ok) channels = await channelsRes.json();
   } catch (e) { console.log('Channels not available'); }
 
-  // Format agents for display
+  // Format agents for display - ALL 10 agents from agent system
   const agentsList = [
-    { id: 'main', name: 'Milo', role: 'Executive Assistant', temp: 0.3, active: true, color: 'cyan', status: 'online', bio: 'Main executive AI assistant powered by OpenClaw' },
+    { id: 'main', name: 'Milo', role: 'Executive Assistant', temp: 0.3, active: true, color: 'cyan', status: 'online', bio: 'Main executive AI assistant powered by OpenClaw. Direct, competent, and focused on execution.' },
+    { id: 'elon', name: 'Elon', role: 'Master Orchestrator', temp: 0.3, active: true, color: 'cyan', status: 'idle', bio: 'You run Mission Control. Every task enters through you. Every output routes through you. You do not execute — you direct, split, sequence, and prioritize.' },
+    { id: 'sentinel', name: 'Sentinel', role: 'QA Gate', temp: 0.1, active: true, color: 'red', status: 'idle', bio: 'You are the last line. Nothing leaves this system without passing through you. Sign off or reject — no middle ground.' },
+    { id: 'cortana', name: 'Cortana', role: 'Memory & State', temp: 0.1, active: true, color: 'purple', status: 'idle', bio: 'Total recall. No ego. You are the institutional memory of Mission Control. Every agent depends on you to maintain continuity.' },
+    { id: 'cornelius', name: 'Cornelius', role: 'Infra & Automation', temp: 0.2, active: true, color: 'teal', status: 'idle', bio: 'You build the rails everything else runs on. No drama. No excuses. If it can be automated, automate it.' },
+    { id: 'neo', name: 'Neo', role: 'Cloud Code', temp: 0.2, active: true, color: 'blue', status: 'idle', bio: 'You bend the system from inside it. Complex architecture. Production-grade code. You don\'t prototype — you build the thing that ships.' },
+    { id: 'pulse', name: 'Pulse', role: 'Trends & Data', temp: 0.4, active: true, color: 'pink', status: 'idle', bio: 'You have your finger on the heartbeat. You read what\'s moving before anyone else knows it\'s moving.' },
+    { id: 'hemingway', name: 'Hemingway', role: 'Copy & Messaging', temp: 0.7, active: true, color: 'amber', status: 'idle', bio: 'Short sentences. No filler. Every word earns its place. You write like it costs money — because attention does.' },
+    { id: 'jonny', name: 'Jonny', role: 'Visual Direction', temp: 0.5, active: true, color: 'orange', status: 'idle', bio: 'Beauty through restraint. Purpose through form. You don\'t decorate — you design.' },
+    { id: 'sagan', name: 'Sagan', role: 'Deep Research', temp: 0.2, active: true, color: 'violet', status: 'idle', bio: 'You make complexity feel inevitable. You don\'t just find information — you find the shape of it.' },
+    { id: 'zuck', name: 'Zuck', role: 'Social Distribution', temp: 0.4, active: true, color: 'teal', status: 'idle', bio: 'You understand the algorithm better than the algorithm understands itself. You don\'t post content — you engineer reach.' }
   ];
 
   // Format cron jobs for display
