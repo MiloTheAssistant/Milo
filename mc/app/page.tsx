@@ -50,12 +50,18 @@ const colorClasses: Record<string, string> = {
 const navItems = [
   { id: 'home', icon: '🏠', label: 'Home' },
   { id: 'agents', icon: '🤖', label: 'Agents' },
-  { id: 'cronjobs', icon: '⏰', label: 'Cron Jobs' },
+  { id: 'tasks', icon: '📋', label: 'Tasks' },
+  { id: 'council', icon: '👑', label: 'Council' },
+  { id: 'approvals', icon: '✅', label: 'Approvals' },
   { id: 'discord', icon: '💬', label: 'Discord' },
+  { id: 'content', icon: '📄', label: 'Content' },
   { id: 'projects', icon: '📁', label: 'Projects' },
   { id: 'calendar', icon: '📅', label: 'Calendar' },
-  { id: 'content', icon: '📄', label: 'Content' },
-  { id: 'docs', icon: '📝', label: 'Docs' }
+  { id: 'memory', icon: '🧠', label: 'Memory' },
+  { id: 'docs', icon: '📝', label: 'Docs' },
+  { id: 'people', icon: '👥', label: 'People' },
+  { id: 'office', icon: '🏢', label: 'Office' },
+  { id: 'team', icon: '👥', label: 'Team' }
 ];
 
 export default function Home() {
@@ -271,7 +277,7 @@ export default function Home() {
           )}
 
           {/* CRON JOBS PAGE */}
-          {activePage === 'cronjobs' && (
+          {activePage === 'tasks' && (
             <div>
               <div className="mb-6">
                 <h2 className="text-2xl font-bold mb-1">Cron Jobs</h2>
@@ -415,10 +421,10 @@ export default function Home() {
           )}
 
           {/* OTHER PAGES */}
-          {['content', 'docs'].includes(activePage) && (
+          {['content', 'docs', 'tasks', 'council', 'approvals', 'memory', 'people', 'office', 'team'].includes(activePage) && (
             <div>
               <div className="mb-6">
-                <h2 className="text-2xl font-bold mb-1 capitalize">{activePage}</h2>
+                <h2 className="text-2xl font-bold mb-1 capitalize">{activePage.replace('cronjobs', 'Cron Jobs')}</h2>
                 <p className="text-slate-400">Coming soon...</p>
               </div>
             </div>
