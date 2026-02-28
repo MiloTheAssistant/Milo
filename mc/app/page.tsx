@@ -195,23 +195,39 @@ export default function Home() {
               {/* Active Tasks Banner */}
               {tasks.length > 0 && (
                 <div className="mb-6 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 border border-cyan-500/30 rounded-xl p-4">
-                  <div className="flex items-center gap-2 mb-2">
+                  <div className="flex items-center gap-2 mb-3">
                     <div className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></div>
                     <span className="text-cyan-400 font-semibold">Active Tasks In Progress</span>
+                    <span className="text-xs text-slate-400">({tasks.length} running)</span>
                   </div>
                   <div className="space-y-2">
                     {tasks.map(task => (
-                      <div key={task.id} className="flex items-center justify-between bg-slate-900/50 rounded-lg p-3">
-                        <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-lg bg-cyan-500/20 flex items-center justify-center text-sm">🤖</div>
-                          <div>
-                            <div className="text-sm font-medium">{task.agent}</div>
-                            <div className="text-xs text-slate-400">{task.model}</div>
+                      <div key={task.id} className="bg-slate-900/60 rounded-lg p-3">
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-lg bg-cyan-500/20 flex items-center justify-center text-sm font-bold">🤖</div>
+                            <div>
+                              <div className="text-sm font-medium">{task.agent}</div>
+                              <div className="text-xs text-slate-400">{task.kind}</div>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <div className="px-2 py-0.5 rounded text-xs bg-blue-500/20 text-blue-400">{task.model}</div>
                           </div>
                         </div>
-                        <div className="text-right">
-                          <div className="text-xs text-slate-400">{task.kind}</div>
-                          <div className="text-xs text-cyan-400">{(task.inputTokens + task.outputTokens).toLocaleString()} tokens</div>
+                        <div className="grid grid-cols-3 gap-2 text-xs">
+                          <div className="bg-slate-800/50 rounded p-2">
+                            <div className="text-slate-500">Input</div>
+                            <div className="font-medium">{task.inputTokens.toLocaleString()}</div>
+                          </div>
+                          <div className="bg-slate-800/50 rounded p-2">
+                            <div className="text-slate-500">Output</div>
+                            <div className="font-medium">{task.outputTokens.toLocaleString()}</div>
+                          </div>
+                          <div className="bg-slate-800/50 rounded p-2">
+                            <div className="text-slate-500">Total</div>
+                            <div className="font-medium text-cyan-400">{(task.inputTokens + task.outputTokens).toLocaleString()}</div>
+                          </div>
                         </div>
                       </div>
                     ))}
