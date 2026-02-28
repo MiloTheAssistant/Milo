@@ -242,6 +242,25 @@ export default function Home() {
                   </div>
                 </div>
               </div>
+
+              {/* Quick Actions */}
+              <div className="mt-6">
+                <h3 className="font-semibold mb-3">Quick Actions</h3>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  {[
+                    { icon: '💬', label: 'Discord', desc: 'Chat', page: 'discord' },
+                    { icon: '📋', label: 'Tasks', desc: 'Cron jobs', page: 'tasks' },
+                    { icon: '🤖', label: 'Agents', desc: 'Manage', page: 'agents' },
+                    { icon: '🌐', label: 'Projects', desc: 'View all', page: 'projects' }
+                  ].map(action => (
+                    <button key={action.label} onClick={() => setActivePage(action.page)}
+                      className="flex items-center gap-3 p-3.5 bg-slate-800/50 border border-slate-700 rounded-xl hover:border-cyan-500/50 hover:-translate-y-0.5 transition-all text-left">
+                      <div className="w-9 h-9 rounded-lg flex items-center justify-center text-lg bg-slate-700">{action.icon}</div>
+                      <div><div className="text-xs font-semibold">{action.label}</div><div className="text-[10px] text-slate-400">{action.desc}</div></div>
+                    </button>
+                  ))}
+                </div>
+              </div>
             </>
           )}
 
