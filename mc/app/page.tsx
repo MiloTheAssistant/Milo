@@ -262,16 +262,26 @@ export default function Home() {
                     <button onClick={() => setActivePage('agents')} className="text-xs text-cyan-400 hover:underline">View all</button>
                   </div>
                   <div className="space-y-2">
-                    {agents.slice(0, 5).map(agent => (
-                      <button key={agent.id} onClick={() => setActivePage('agents')} className="w-full flex items-center gap-3 p-2.5 bg-slate-800/50 rounded-lg hover:bg-slate-800 transition-colors text-left">
-                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold bg-gradient-to-br ${colorClasses[agent.color]}`}>{agent.name[0]}</div>
-                        <div className="flex-1 min-w-0">
-                          <div className="text-sm font-medium truncate">{agent.name}</div>
-                          <div className="text-xs text-slate-400 truncate">{agent.role}</div>
-                        </div>
-                        <span className={`w-2 h-2 rounded-full ${agent.active ? 'bg-emerald-400' : 'bg-slate-500'}`}></span>
-                      </button>
-                    ))}
+                    {agents.slice(0, 5).map(agent => {
+                      // Find if this agent has an active task
+                      const activeTask = tasks.find(t => t.agent === agent.id || t.agent === agent.name.toLowerCase());
+                      return (
+                        <button key={agent.id} onClick={() => setActivePage('agents')} className="w-full flex items-center gap-3 p-2.5 bg-slate-800/50 rounded-lg hover:bg-slate-800 transition-colors text-left">
+                          <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold bg-gradient-to-br ${colorClasses[agent.color]}`}>{agent.name[0]}</div>
+                          <div className="flex-1 min-w-0">
+                            <div className="text-sm font-medium truncate">{agent.name}</div>
+                            <div className="text-xs text-slate-400 truncate">{agent.role}</div>
+                            {activeTask && (
+                              <div className="flex items-center gap-2 mt-1">
+                                <span className="text-[10px] px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-400">{activeTask.model.split('/').pop()}</span>
+                                <span className="text-[10px] text-cyan-400">{(activeTask.inputTokens + activeTask.outputTokens).toLocaleString()} tokens</span>
+                              </div>
+                            )}
+                          </div>
+                          <span className={`w-2 h-2 rounded-full ${agent.active ? 'bg-emerald-400' : 'bg-slate-500'}`}></span>
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
 
